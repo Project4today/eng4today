@@ -90,7 +90,7 @@ const ChatPage = () => {
 
   const [showVersionModal, setShowVersionModal] = useState(false);
   const [botVersion, setBotVersion] = useState(() => {
-    return localStorage.getItem('bot_version') || 'gemini-flash-latest';
+    return localStorage.getItem('bot_version') || 'gemini-2.0-flash';
   });
   const [customVersionInput, setCustomVersionInput] = useState('');
 
@@ -241,8 +241,10 @@ const ChatPage = () => {
             <h3>Select Bot Version</h3>
             <p>Choose a model version for the AI's responses.</p>
             <div className="prompt-options">
-              <button className={`prompt-option-btn ${botVersion === 'gemini-pro-latest' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-pro-latest')}>Pro (Slower, More Powerful)</button>
-              <button className={`prompt-option-btn ${botVersion === 'gemini-flash-latest' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-flash-latest')}>Flash (Faster, Lighter)</button>
+              <button className={`prompt-option-btn ${botVersion === 'gemini-2.0-flash' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-2.0-flash')}>2.0 Flash (Default)</button>
+              <button className={`prompt-option-btn ${botVersion === 'gemini-2.0-flash-lite' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-2.0-flash-lite')}>2.0 Flash Lite</button>
+              <button className={`prompt-option-btn ${botVersion === 'gemini-pro-latest' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-pro-latest')}>1.0 Pro (Legacy)</button>
+              <button className={`prompt-option-btn ${botVersion === 'gemini-flash-latest' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-flash-latest')}>1.0 Flash (Legacy)</button>
             </div>
             <input 
               type="text"
@@ -329,7 +331,7 @@ const ChatPage = () => {
             <PromptIcon />
           </button>
           <button className="icon-btn" onClick={() => setShowVersionModal(true)} title={`Current Model: ${botVersion}`}>
-            {botVersion === 'gemini-pro-latest' ? <SparkleIcon /> : (botVersion === 'gemini-flash-latest' ? <BoltIcon /> : <CustomIcon />)}
+            {botVersion.includes('pro') ? <SparkleIcon /> : (botVersion.includes('flash') ? <BoltIcon /> : <CustomIcon />)}
           </button>
           <button className="icon-btn" onClick={handleSend} disabled={!input.trim() || isThinking}>
             <SendIcon />
