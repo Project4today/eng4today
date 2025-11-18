@@ -299,7 +299,7 @@ body {
 }
 
 .message.user {
-  background: #00c6ff; /* New cool and high-contrast color */
+  background: #00c6ff;
 }
 
 .message.bot {
@@ -321,7 +321,7 @@ body {
   display: flex;
   align-items: center;
   padding: 15px 20px;
-  gap: 15px;
+  gap: 10px;
   flex-shrink: 0;
   position: relative;
 }
@@ -353,7 +353,7 @@ input[type='text']:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, box-shadow 0.2s;
 }
 .icon-btn:hover {
   background-color: rgba(255, 255, 255, 0.1);
@@ -361,6 +361,12 @@ input[type='text']:focus {
 .icon-btn:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+/* --- Visual Feedback for Active Prompt --- */
+.icon-btn.active {
+  color: #00c6ff;
+  box-shadow: 0 0 8px rgba(0, 198, 255, 0.7);
 }
 
 /* --- New Typing Indicator --- */

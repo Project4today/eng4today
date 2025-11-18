@@ -9,6 +9,9 @@ const NewChatIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill
 const SendIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> );
 const PersonaIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg> );
 const PromptIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h.01"/><path d="M12 4v12"/><path d="M12 4l-4 4"/><path d="M12 4l4 4"/></svg> );
+const BoltIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> );
+const SparkleIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v2.35M16.24 7.76l-1.77 1.77M21 12h-2.35M16.24 16.24l-1.77-1.77M12 21v-2.35M7.76 16.24l1.77-1.77M3 12h2.35M7.76 7.76l1.77 1.77"/></svg> );
+const CustomIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"/><path d="M18 2l4 4-10 10H8v-4L18 2z"/></svg> );
 
 // Bot Avatar Component
 const BotAvatar = () => ( <img src="https://api.dicebear.com/8.x/bottts-neutral/svg?seed=AI" alt="Bot Avatar" className="bot-avatar" /> );
@@ -85,29 +88,31 @@ const ChatPage = () => {
   const [showMessageConfigMenu, setShowMessageConfigMenu] = useState(false);
   const [messageSpecificInstruction, setMessageSpecificInstruction] = useState('');
 
+  const [showVersionModal, setShowVersionModal] = useState(false);
+  const [botVersion, setBotVersion] = useState(() => {
+    return localStorage.getItem('bot_version') || 'gemini-flash-latest';
+  });
+  const [customVersionInput, setCustomVersionInput] = useState('');
+
   const mainInputRef = useRef(null);
   const messagesEndRef = useRef(null);
   const personaModalRef = useRef(null);
-  const messageConfigPopupRef = useRef(null); // Ref for the message config pop-up
+  const messageConfigPopupRef = useRef(null);
+  const versionModalRef = useRef(null);
 
-  // --- Click outside to close modals/popups ---
   useEffect(() => {
     function handleClickOutside(event) {
-      if (personaModalRef.current && !personaModalRef.current.contains(event.target)) {
-        setShowPersonaModal(false);
-      }
+      if (personaModalRef.current && !personaModalRef.current.contains(event.target)) { setShowPersonaModal(false); }
       if (messageConfigPopupRef.current && !messageConfigPopupRef.current.contains(event.target)) {
-        // Check if the click was on the toggle button itself
-        if (!event.target.closest('.icon-btn[title="Set Instruction for this Message"]')) {
-          setShowMessageConfigMenu(false);
-        }
+        if (!event.target.closest('.icon-btn[title="Set Instruction for this Message"]')) { setShowMessageConfigMenu(false); }
+      }
+      if (versionModalRef.current && !versionModalRef.current.contains(event.target)) {
+        if (!event.target.closest('.icon-btn[title*="Current Model"]')) { setShowVersionModal(false); }
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [personaModalRef, messageConfigPopupRef]);
+    return () => { document.removeEventListener("mousedown", handleClickOutside); };
+  }, [personaModalRef, messageConfigPopupRef, versionModalRef]);
 
   const fetchConversations = useCallback(async () => {
     const meta = await getConversations();
@@ -160,28 +165,33 @@ const ChatPage = () => {
     const isFirstMessage = activeConversationMessages.length === 0;
     const userMessage = { role: 'user', content: input };
     
+    // Optimistic update for user message
     setActiveConversationMessages(prev => [...prev, userMessage]);
 
     const currentInput = input;
     setInput('');
     setIsThinking(true);
 
-    let config = null;
+    let config = { bot_version: botVersion };
     if (messageSpecificInstruction) {
-      config = { system_instruction: messageSpecificInstruction };
+      config.system_instruction = messageSpecificInstruction;
     } else if (isFirstMessage) {
-      config = { system_instruction: currentSystemPrompt };
+      config.system_instruction = currentSystemPrompt;
     }
 
+    // Send message and wait for backend to be fully updated
     await sendMessage(activeConversationId, currentInput, config);
     
+    // Clear one-time instruction
     setMessageSpecificInstruction('');
     setShowMessageConfigMenu(false);
 
+    // Fetch the definitive, updated history from the server
     const updatedMessages = await getChatHistory(activeConversationId);
     setActiveConversationMessages(updatedMessages);
     setIsThinking(false);
 
+    // Refresh sidebar if it was the first message
     if (isFirstMessage) {
       await fetchConversations();
     }
@@ -196,6 +206,13 @@ const ChatPage = () => {
   const handleSetMessageInstruction = (instruction) => {
     setMessageSpecificInstruction(instruction);
     setShowMessageConfigMenu(false);
+  };
+
+  const handleSetVersion = (version) => {
+    const newVersion = version || 'gemini-flash-latest';
+    setBotVersion(newVersion);
+    localStorage.setItem('bot_version', newVersion);
+    setShowVersionModal(false);
   };
 
   const activeTitle = conversationsMeta.find(c => c.session_id === activeConversationId)?.title || "New Chat";
@@ -214,6 +231,30 @@ const ChatPage = () => {
               onSet={handleSetPersona}
               onCancel={() => setShowPersonaModal(false)}
             />
+          </div>
+        </div>
+      )}
+
+      {showVersionModal && (
+        <div className="prompt-modal-overlay">
+          <div className="prompt-modal-content" ref={versionModalRef}>
+            <h3>Select Bot Version</h3>
+            <p>Choose a model version for the AI's responses.</p>
+            <div className="prompt-options">
+              <button className={`prompt-option-btn ${botVersion === 'gemini-pro-latest' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-pro-latest')}>Pro (Slower, More Powerful)</button>
+              <button className={`prompt-option-btn ${botVersion === 'gemini-flash-latest' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-flash-latest')}>Flash (Faster, Lighter)</button>
+            </div>
+            <input 
+              type="text"
+              className="prompt-textarea"
+              placeholder="Or enter a custom version name..."
+              value={customVersionInput}
+              onChange={(e) => setCustomVersionInput(e.target.value)}
+            />
+            <div className="prompt-modal-actions">
+              <button className="prompt-modal-cancel-btn" onClick={() => setShowVersionModal(false)}>Cancel</button>
+              <button className="prompt-modal-set-btn" onClick={() => handleSetVersion(customVersionInput)}>Apply Custom</button>
+            </div>
           </div>
         </div>
       )}
@@ -286,6 +327,9 @@ const ChatPage = () => {
           <input ref={mainInputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} disabled={isThinking} placeholder="Type a message..."/>
           <button className="icon-btn" onClick={() => setShowMessageConfigMenu(!showMessageConfigMenu)} title="Set Instruction for this Message">
             <PromptIcon />
+          </button>
+          <button className="icon-btn" onClick={() => setShowVersionModal(true)} title={`Current Model: ${botVersion}`}>
+            {botVersion === 'gemini-pro-latest' ? <SparkleIcon /> : (botVersion === 'gemini-flash-latest' ? <BoltIcon /> : <CustomIcon />)}
           </button>
           <button className="icon-btn" onClick={handleSend} disabled={!input.trim() || isThinking}>
             <SendIcon />
