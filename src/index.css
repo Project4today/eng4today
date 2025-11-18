@@ -1,0 +1,528 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+body {
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  color: #1f1f1f;
+}
+
+#root {
+  height: 100%;
+  width: 100%;
+  max-width: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+.page-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+}
+
+.app-layout {
+  display: flex;
+  height: 90%;
+  width: 90%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  overflow: hidden;
+  border-radius: 20px;
+}
+
+/* --- Back Button --- */
+.back-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+  margin-right: 10px;
+}
+.back-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* --- Sidebar --- */
+.sidebar {
+  width: 280px;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease-in-out;
+  flex-shrink: 0;
+}
+
+.sidebar.closed {
+  margin-left: -280px;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  height: 60px;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: #fff;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+.menu-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-title {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+.sidebar-nav {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  flex-grow: 1;
+  min-height: 0;
+}
+
+.new-chat-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.new-chat-btn {
+  flex-grow: 1;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 12px;
+  color: #fff;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.new-chat-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.persona-btn {
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 12px;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.persona-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* --- History List --- */
+.history-list {
+  flex-grow: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding-right: 5px;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 0.95em;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #e0e0e0;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.history-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.history-item.active {
+  background-color: #2575fc;
+  font-weight: 600;
+  color: #fff;
+}
+
+.history-item-title {
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-right: 10px;
+}
+
+.history-item-date {
+  font-size: 0.8em;
+  color: rgba(255, 255, 255, 0.7);
+  flex-shrink: 0;
+}
+
+/* --- Chat Area --- */
+.chat-area {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  min-width: 0;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  height: 61px;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.chat-header h2 {
+  flex-grow: 1;
+  text-align: left;
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: 600;
+  padding-left: 10px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.messages {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.messages::-webkit-scrollbar, .history-list::-webkit-scrollbar {
+  width: 8px;
+}
+.messages::-webkit-scrollbar-track, .history-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.messages::-webkit-scrollbar-thumb, .history-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+.messages::-webkit-scrollbar-thumb:hover, .history-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.message-wrapper {
+  display: flex;
+  margin-bottom: 15px;
+  width: 100%;
+  align-items: flex-end;
+}
+
+.message-wrapper.user { justify-content: flex-end; }
+.message-wrapper.bot { justify-content: flex-start; }
+
+.bot-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.message {
+  padding: 10px 15px;
+  border-radius: 20px;
+  word-wrap: break-word;
+  line-height: 1.6;
+  max-width: 75%;
+  text-align: left;
+  color: #fff;
+}
+
+.message.user {
+  background: #00c6ff; /* New cool and high-contrast color */
+}
+
+.message.bot {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.message.bot img {
+  max-width: 450px;
+  max-height: 400px;
+  border-radius: 12px;
+  margin-top: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  object-fit: cover;
+  display: block;
+}
+
+/* --- Input Area --- */
+.input-area {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  gap: 15px;
+  flex-shrink: 0;
+  position: relative;
+}
+
+input[type='text'] {
+  flex-grow: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid transparent;
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 22px;
+  font-size: 1em;
+  outline: none;
+}
+input[type='text']::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+input[type='text']:focus {
+  border-color: #2575fc;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+.icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* --- New Typing Indicator --- */
+.typing-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+}
+
+.typing-indicator span {
+  height: 8px;
+  width: 8px;
+  margin: 0 3px;
+  background-color: #fff;
+  border-radius: 50%;
+  opacity: 0.4;
+  animation: typing-pulse 1.4s infinite ease-in-out both;
+}
+
+.typing-indicator span:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.typing-indicator span:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes typing-pulse {
+  0%, 80%, 100% {
+    transform: scale(0.8);
+    opacity: 0.4;
+  }
+  40% {
+    transform: scale(1.0);
+    opacity: 1;
+  }
+}
+
+/* --- Unified Prompt Selector Styles --- */
+.prompt-content {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  text-align: left;
+}
+.prompt-content h3 {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: #a8b2ff;
+  text-shadow: 0 0 5px rgba(168, 178, 255, 0.5);
+}
+.prompt-content p {
+  font-size: 0.9em;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0 0 5px 0;
+}
+.prompt-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.prompt-option-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 12px 15px;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+.prompt-option-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.prompt-option-btn.active {
+  background-color: #2575fc;
+  border-color: #2575fc;
+  font-weight: 600;
+}
+.prompt-textarea {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(0, 0, 0, 0.2);
+  color: #fff;
+  font-family: 'Inter', sans-serif;
+  font-size: 1em;
+  outline: none;
+  resize: vertical;
+  min-height: 100px;
+}
+.prompt-textarea:focus {
+  border-color: #2575fc;
+}
+.prompt-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+.prompt-modal-cancel-btn, .prompt-modal-set-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1em;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+.prompt-modal-set-btn {
+  background: #2575fc;
+  border-color: #2575fc;
+}
+.prompt-modal-cancel-btn:hover { background-color: rgba(255, 255, 255, 0.2); }
+.prompt-modal-set-btn:hover { background-color: #1a60cc; }
+
+/* --- Pop-up for Message Config --- */
+.message-config-popup {
+  position: absolute;
+  bottom: 80px;
+  right: 20px;
+  width: 350px;
+  background: rgba(15, 15, 35, 0.8);
+  backdrop-filter: blur(15px);
+  border-radius: 15px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  z-index: 10;
+}
+
+/* --- Persona Modal --- */
+.prompt-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.prompt-modal-content {
+  background: rgba(15, 15, 35, 0.8);
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.prompt-modal-content h3 {
+  color: #a8b2ff;
+  text-shadow: 0 0 5px rgba(168, 178, 255, 0.5);
+}

@@ -1,0 +1,78 @@
+.home-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%; /* Use 100% to fill the #root container */
+  width: 100%;
+  color: #fff;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  /* Padding is removed from here to allow true full-screen */
+}
+
+.home-content {
+  max-width: 800px;
+  z-index: 2;
+  padding: 20px; /* Padding is applied to the content, not the container */
+}
+
+.home-title {
+  font-size: 3.5em;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.home-subtitle {
+  font-size: 1.5em;
+  margin-bottom: 40px;
+  opacity: 0.9;
+}
+
+.feature-cards {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.feature-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 15px;
+  padding: 30px;
+  width: 300px;
+  text-decoration: none;
+  color: #fff;
+  transition: transform 0.3s, box-shadow 0.3s;
+  z-index: 2;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
+}
+
+.feature-card h2 {
+  font-size: 1.8em;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.feature-card p {
+  font-size: 1em;
+  opacity: 0.8;
+  line-height: 1.6;
+}
+
+.home-decoration {
+  position: absolute;
+  width: 800px;
+  height: 800px;
+  right: -250px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: radial-gradient(circle, rgba(37, 117, 252, 0.3) 0%, rgba(106, 17, 203, 0) 70%);
+  border-radius: 50%;
+  z-index: 1;
+}

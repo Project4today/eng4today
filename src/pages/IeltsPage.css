@@ -1,0 +1,162 @@
+/* --- Main Layout for IELTS Page --- */
+.ielts-page-layout {
+  display: flex;
+  height: 90%;
+  width: 90%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(25px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  overflow: hidden;
+}
+
+/* --- Re-using Sidebar styles from index.css for consistency --- */
+/* You can add specific overrides here if needed */
+.ielts-page-layout .sidebar {
+  background: rgba(255, 255, 255, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.ielts-page-layout .nav-btn.active {
+  background-color: #2575fc;
+  font-weight: 600;
+  color: #fff;
+}
+
+/* --- Main Chat Area for IELTS --- */
+.ielts-chat-area {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  background: transparent;
+  min-width: 0;
+}
+
+.ielts-header {
+  display: flex;
+  align-items: center;
+  padding: 0 15px;
+  height: 61px;
+  flex-shrink: 0;
+  color: #fff;
+}
+
+.ielts-header h2 {
+  flex-grow: 1;
+  text-align: left;
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: 600;
+  padding-left: 10px;
+}
+
+.ielts-messages {
+  flex-grow: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.ielts-messages::-webkit-scrollbar {
+  width: 8px;
+}
+.ielts-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+.ielts-messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+}
+
+.ielts-message-wrapper {
+  display: flex;
+  margin-bottom: 20px;
+  width: 100%;
+  align-items: flex-end;
+}
+
+.ielts-message-wrapper.user {
+  justify-content: flex-end;
+}
+
+.ielts-message-wrapper.bot {
+  justify-content: flex-start;
+}
+
+.examiner-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 15px;
+  flex-shrink: 0;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.ielts-message {
+  padding: 12px 18px;
+  border-radius: 20px;
+  word-wrap: break-word;
+  line-height: 1.6;
+  max-width: 80%;
+  text-align: left;
+  color: #fff;
+}
+
+.ielts-message.user {
+  background: #2575fc;
+}
+
+.ielts-message.bot {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.ielts-input-area {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.ielts-input-area input[type='text'] {
+  flex-grow: 1;
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid transparent;
+  color: #fff;
+  padding: 14px 20px;
+  border-radius: 22px;
+  font-size: 1em;
+  outline: none;
+}
+.ielts-input-area input[type='text']::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+.ielts-input-area input[type='text']:focus {
+  border-color: #2575fc;
+}
+
+.ielts-icon-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+.ielts-icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.ielts-icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.typing-indicator span {
+  background-color: #fff;
+  animation: skype-pulse 1.4s infinite ease-in-out both;
+}
+@keyframes skype-pulse { 0%, 80%, 100% { opacity: 0.3; } 40% { opacity: 1; } }
