@@ -16,6 +16,7 @@ const BoltIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="n
 const SparkleIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v2.35M16.24 7.76l-1.77 1.77M21 12h-2.35M16.24 16.24l-1.77-1.77M12 21v-2.35M7.76 16.24l1.77-1.77M3 12h2.35M7.76 7.76l1.77 1.77"/></svg> );
 const CustomIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"/><path d="M18 2l4 4-10 10H8v-4L18 2z"/></svg> );
 const EyeIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>;
+const CloseIcon = () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>;
 
 // --- Reusable Avatar Component ---
 const Avatar = ({ persona, className }) => {
@@ -52,7 +53,7 @@ const formatUpdatedAt = (isoString) => {
 };
 
 // Reusable Persona Selector Component
-const PersonaSelector = ({ title, description, onSet, onCancel, onReview, onCreate, currentPersonaId, personas }) => (
+const PersonaSelector = ({ title, description, onSet, onReview, onCreate, currentPersonaId, personas }) => (
   <div className="prompt-content">
     <div className="prompt-header">
       <h3>{title}</h3>
@@ -73,9 +74,6 @@ const PersonaSelector = ({ title, description, onSet, onCancel, onReview, onCrea
           </button>
         </div>
       ))}
-    </div>
-    <div className="prompt-modal-actions">
-      {onCancel && <button className="prompt-modal-cancel-btn" onClick={onCancel}>Cancel</button>}
     </div>
   </div>
 );
@@ -128,17 +126,36 @@ const ChatPage = () => {
     fetchPersonas();
   }, []);
 
+  const handleCancelEdit = () => {
+    setEditingPersona(null);
+    setShowPersonaModal(true);
+  };
+
+  const handleCloseDetailView = () => {
+    setPersonaToReview(null);
+    setShowPersonaModal(true);
+  };
+
   useEffect(() => {
     function handleClickOutside(event) {
-      if (personaToReview || editingPersona) return;
-      if (personaModalRef.current && !personaModalRef.current.contains(event.target)) { setShowPersonaModal(false); }
-      if (versionModalRef.current && !versionModalRef.current.contains(event.target)) {
-        if (!event.target.closest('.icon-btn[title*="Current Model"]')) { setShowVersionModal(false); }
+      if (showPersonaModal && personaModalRef.current && !personaModalRef.current.contains(event.target)) {
+        setShowPersonaModal(false);
+      }
+      if (showVersionModal && versionModalRef.current && !versionModalRef.current.contains(event.target)) {
+        if (!event.target.closest('.icon-btn[title*="Current Model"]')) {
+          setShowVersionModal(false);
+        }
+      }
+      if (editingPersona && !event.target.closest('.persona-form-content')) {
+        handleCancelEdit();
+      }
+      if (personaToReview && !event.target.closest('.persona-cv-content')) {
+        handleCloseDetailView();
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => { document.removeEventListener("mousedown", handleClickOutside); };
-  }, [personaModalRef, versionModalRef, personaToReview, editingPersona]);
+  }, [showPersonaModal, showVersionModal, editingPersona, personaToReview]);
 
   const fetchConversations = useCallback(async () => {
     const meta = await getConversations();
@@ -224,8 +241,8 @@ const ChatPage = () => {
     } else {
       await createPersona(formData);
     }
-    setEditingPersona(null);
     await fetchPersonas();
+    setEditingPersona(null);
     setShowPersonaModal(true);
   };
 
@@ -253,20 +270,14 @@ const ChatPage = () => {
         <PersonaForm 
           persona={editingPersona === 'new' ? null : editingPersona}
           onSave={handleSavePersona}
-          onCancel={() => {
-            setEditingPersona(null);
-            setShowPersonaModal(true);
-          }}
+          onCancel={handleCancelEdit}
         />
       )}
 
       {personaToReview && (
         <PersonaDetailView 
           persona={personaToReview} 
-          onClose={() => {
-            setPersonaToReview(null);
-            setShowPersonaModal(true);
-          }}
+          onClose={handleCloseDetailView}
           onEdit={() => {
             setEditingPersona(personaToReview);
             setPersonaToReview(null);
@@ -276,49 +287,55 @@ const ChatPage = () => {
       )}
 
       {showPersonaModal && (
-        <div className="prompt-modal-overlay">
-          <div className="prompt-modal-content" ref={personaModalRef}>
-            <PersonaSelector
-              title="Switch AI Persona"
-              description="Select a new persona for the current conversation."
-              currentPersonaId={nextMessagePersonaId || activePersona?.prompt_id}
-              onSet={handlePersonaChange}
-              onCancel={() => setShowPersonaModal(false)}
-              onReview={(persona) => {
-                setPersonaToReview(persona);
-                setShowPersonaModal(false);
-              }}
-              onCreate={() => {
-                setEditingPersona('new');
-                setShowPersonaModal(false);
-              }}
-              personas={personas}
-            />
+        <div className="prompt-modal-overlay" onClick={() => setShowPersonaModal(false)}>
+          <div className="modal-container" ref={personaModalRef}>
+            <button className="modal-close-btn" onClick={() => setShowPersonaModal(false)}><CloseIcon /></button>
+            <div className="prompt-modal-content" onClick={(e) => e.stopPropagation()}>
+              <PersonaSelector
+                title="Switch AI Persona"
+                description="Select a new persona for the current conversation."
+                currentPersonaId={nextMessagePersonaId || activePersona?.prompt_id}
+                onSet={handlePersonaChange}
+                onReview={(persona) => {
+                  setShowPersonaModal(false);
+                  setPersonaToReview(persona);
+                }}
+                onCreate={() => {
+                  setShowPersonaModal(false);
+                  setEditingPersona('new');
+                }}
+                personas={personas}
+              />
+            </div>
           </div>
         </div>
       )}
 
       {showVersionModal && (
-        <div className="prompt-modal-overlay">
-          <div className="prompt-modal-content" ref={versionModalRef}>
-            <h3>Select Bot Version</h3>
-            <p>Choose a model version for the AI's responses.</p>
-            <div className="prompt-options">
-              <button className={`prompt-option-btn ${botVersion === 'gemini-2.0-flash' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-2.0-flash')}>2.0 Flash (Default)</button>
-              <button className={`prompt-option-btn ${botVersion === 'gemini-2.0-flash-lite' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-2.0-flash-lite')}>2.0 Flash Lite</button>
-              <button className={`prompt-option-btn ${botVersion === 'gemini-pro-latest' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-pro-latest')}>1.0 Pro (Legacy)</button>
-              <button className={`prompt-option-btn ${botVersion === 'gemini-flash-latest' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-flash-latest')}>1.0 Flash (Legacy)</button>
-            </div>
-            <input 
-              type="text"
-              className="prompt-textarea"
-              placeholder="Or enter a custom version name..."
-              value={customVersionInput}
-              onChange={(e) => setCustomVersionInput(e.target.value)}
-            />
-            <div className="prompt-modal-actions">
-              <button className="prompt-modal-cancel-btn" onClick={() => setShowVersionModal(false)}>Cancel</button>
-              <button className="prompt-modal-set-btn" onClick={() => handleSetVersion(customVersionInput)}>Apply Custom</button>
+        <div className="prompt-modal-overlay" onClick={() => setShowVersionModal(false)}>
+          <div className="modal-container" ref={versionModalRef}>
+            <button className="modal-close-btn" onClick={() => setShowVersionModal(false)}><CloseIcon /></button>
+            <div className="prompt-modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="prompt-header">
+                <h3>Select Bot Version</h3>
+              </div>
+              <p>Choose a model version for the AI's responses.</p>
+              <div className="prompt-options">
+                <button className={`prompt-option-btn ${botVersion === 'gemini-2.0-flash' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-2.0-flash')}>2.0 Flash (Default)</button>
+                <button className={`prompt-option-btn ${botVersion === 'gemini-2.0-flash-lite' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-2.0-flash-lite')}>2.0 Flash Lite</button>
+                <button className={`prompt-option-btn ${botVersion === 'gemini-pro-latest' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-pro-latest')}>1.0 Pro (Legacy)</button>
+                <button className={`prompt-option-btn ${botVersion === 'gemini-flash-latest' ? 'active' : ''}`} onClick={() => handleSetVersion('gemini-flash-latest')}>1.0 Flash (Legacy)</button>
+              </div>
+              <input 
+                type="text"
+                className="prompt-textarea"
+                placeholder="Or enter a custom version name..."
+                value={customVersionInput}
+                onChange={(e) => setCustomVersionInput(e.target.value)}
+              />
+              <div className="prompt-modal-actions">
+                <button className="prompt-modal-set-btn" onClick={() => handleSetVersion(customVersionInput)}>Apply Custom</button>
+              </div>
             </div>
           </div>
         </div>
