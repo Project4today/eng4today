@@ -1,10 +1,8 @@
 const USER_ID = 1;
 const API_BASE_URL = "http://localhost:8000/api";
 
-/**
- * Fetches the list of all available personas.
- * GET /api/personas/
- */
+// --- Persona CRUD ---
+
 export async function getPersonas() {
   try {
     const response = await fetch(`${API_BASE_URL}/personas/`, {
@@ -19,10 +17,60 @@ export async function getPersonas() {
   }
 }
 
-/**
- * Fetches the list of all chat sessions for the user.
- * GET /api/users/{user_id}/sessions
- */
+export async function createPersona(personaData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/personas`, {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(personaData),
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error("Error creating persona:", error);
+    throw error;
+  }
+}
+
+export async function updatePersona(personaId, personaData) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/personas/${personaId}`, {
+      method: 'PUT',
+      headers: {
+        'accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(personaData),
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    return await response.json();
+  } catch (error) {
+    console.error("Error updating persona:", error);
+    throw error;
+  }
+}
+
+export async function deletePersona(personaId) {
+  try {
+    const response = await fetch(`${API_BASE_URL}/personas/${personaId}`, {
+      method: 'DELETE',
+      headers: { 'accept': 'application/json' },
+    });
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    // DELETE often returns a 204 No Content, so we might not have a body
+    return { success: true };
+  } catch (error) {
+    console.error("Error deleting persona:", error);
+    throw error;
+  }
+}
+
+
+// --- Chat Session Management ---
+
 export async function getConversations() {
   try {
     const response = await fetch(`${API_BASE_URL}/users/${USER_ID}/sessions`, {
@@ -37,10 +85,6 @@ export async function getConversations() {
   }
 }
 
-/**
- * Starts a new chat session with a specific persona.
- * POST /api/chat/start
- */
 export async function startNewChat(persona_id) {
   try {
     const body = { 
@@ -68,11 +112,6 @@ export async function startNewChat(persona_id) {
   }
 }
 
-
-/**
- * Retrieves the full message history for a single chat session.
- * GET /api/chat/{session_id}
- */
 export async function getChatHistory(sessionId) {
   try {
     const response = await fetch(`${API_BASE_URL}/chat/${sessionId}`, {
@@ -80,25 +119,16 @@ export async function getChatHistory(sessionId) {
       headers: { 'accept': 'application/json' },
     });
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-    const data = await response.json();
-    // Assuming the session details (like persona_id) are returned with the history
-    return data;
+    return await response.json();
   } catch (error) {
     console.error("Error getting chat history:", error);
     return { history: [] };
   }
 }
 
-/**
- * Sends a message to a specific chat session.
- * Can optionally include a persona_id to update the session's default persona.
- * POST /api/chat/{session_id}/message
- */
 export async function sendMessage(sessionId, message, persona_id = null) {
   try {
-    const body = {
-      message,
-    };
+    const body = { message };
     if (persona_id) {
       body.persona_id = persona_id;
     }
@@ -120,6 +150,6 @@ export async function sendMessage(sessionId, message, persona_id = null) {
 
   } catch (error) {
     console.error("Error sending message:", error);
-    return { role: 'model', content: "Error: Could not get a response from the server. Please ensure the backend is running and CORS is configured." };
+    return { role: 'model', content: "Error: Could not get a response from the server." };
   }
 }

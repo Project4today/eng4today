@@ -266,17 +266,34 @@ body {
   overflow-y: auto;
 }
 
-.messages::-webkit-scrollbar, .history-list::-webkit-scrollbar, .prompt-options::-webkit-scrollbar {
+/* --- Custom Scrollbars --- */
+.messages::-webkit-scrollbar, 
+.history-list::-webkit-scrollbar, 
+.prompt-options::-webkit-scrollbar,
+.cv-body::-webkit-scrollbar,
+.form-body::-webkit-scrollbar {
   width: 6px;
 }
-.messages::-webkit-scrollbar-track, .history-list::-webkit-scrollbar-track, .prompt-options::-webkit-scrollbar-track {
+.messages::-webkit-scrollbar-track, 
+.history-list::-webkit-scrollbar-track, 
+.prompt-options::-webkit-scrollbar-track,
+.cv-body::-webkit-scrollbar-track,
+.form-body::-webkit-scrollbar-track {
   background: transparent;
 }
-.messages::-webkit-scrollbar-thumb, .history-list::-webkit-scrollbar-thumb, .prompt-options::-webkit-scrollbar-thumb {
+.messages::-webkit-scrollbar-thumb, 
+.history-list::-webkit-scrollbar-thumb, 
+.prompt-options::-webkit-scrollbar-thumb,
+.cv-body::-webkit-scrollbar-thumb,
+.form-body::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.25);
   border-radius: 10px;
 }
-.messages::-webkit-scrollbar-thumb:hover, .history-list::-webkit-scrollbar-thumb:hover, .prompt-options::-webkit-scrollbar-thumb:hover {
+.messages::-webkit-scrollbar-thumb:hover, 
+.history-list::-webkit-scrollbar-thumb:hover, 
+.prompt-options::-webkit-scrollbar-thumb:hover,
+.cv-body::-webkit-scrollbar-thumb:hover,
+.form-body::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.4);
 }
 
@@ -459,12 +476,26 @@ input[type='text']:focus {
   gap: 15px;
   text-align: left;
 }
+.prompt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 .prompt-content h3 {
   margin: 0;
   font-size: 1.2em;
   font-weight: 600;
   color: #a8b2ff;
   text-shadow: 0 0 5px rgba(168, 178, 255, 0.5);
+}
+.create-new-btn {
+  background: #2575fc;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
 }
 .prompt-content p {
   font-size: 0.9em;
@@ -475,9 +506,9 @@ input[type='text']:focus {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: 200px; /* Or any height you prefer */
+  max-height: 200px;
   overflow-y: auto;
-  padding-right: 10px; /* To avoid scrollbar overlapping content */
+  padding-right: 10px;
 }
 .prompt-option-container {
   display: flex;
@@ -538,7 +569,7 @@ input[type='text']:focus {
 .prompt-modal-cancel-btn:hover { background-color: rgba(255, 255, 255, 0.2); }
 
 /* --- Persona Modal Overlays --- */
-.prompt-modal-overlay, .persona-cv-overlay {
+.prompt-modal-overlay, .persona-cv-overlay, .persona-form-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -549,7 +580,6 @@ input[type='text']:focus {
   align-items: center;
   z-index: 20;
   
-  /* Smoother fade-in */
   background-color: rgba(10, 15, 30, 0.0);
   backdrop-filter: blur(0px);
   animation: fadeInOverlay 0.3s ease forwards;
@@ -562,18 +592,8 @@ input[type='text']:focus {
   }
 }
 
-.persona-cv-overlay {
+.persona-cv-overlay, .persona-form-overlay {
   z-index: 30;
-  background-color: rgba(10, 15, 30, 0.0);
-  backdrop-filter: blur(0px);
-  animation: fadeInCvOverlay 0.3s ease forwards;
-}
-
-@keyframes fadeInCvOverlay {
-  to {
-    background-color: rgba(10, 15, 30, 0.3);
-    backdrop-filter: blur(12px);
-  }
 }
 
 .prompt-modal-content {
@@ -587,20 +607,15 @@ input[type='text']:focus {
   max-width: 500px;
 }
 
-.prompt-modal-content h3 {
-  color: #a8b2ff;
-  text-shadow: 0 0 5px rgba(168, 178, 255, 0.5);
-}
-
 /* --- Persona CV Modal --- */
 .persona-cv-content {
   background: #1e1e2f;
   color: #e0e0e0;
   border-radius: 20px;
   width: 90%;
-  max-width: 700px;
-  height: 85%;
-  max-height: 800px;
+  max-width: 800px; /* Increased width */
+  height: 90%;
+  max-height: 850px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.5);
   border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
@@ -608,10 +623,15 @@ input[type='text']:focus {
   overflow: hidden;
   position: relative;
 }
-.cv-close-btn {
+.cv-actions {
   position: absolute;
-  top: 15px;
-  right: 15px;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  z-index: 1;
+}
+.cv-action-btn {
   background: rgba(255,255,255,0.1);
   border: none;
   color: #fff;
@@ -622,9 +642,9 @@ input[type='text']:focus {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1;
 }
-.cv-close-btn:hover { background: rgba(255,255,255,0.2); }
+.cv-action-btn:hover { background: rgba(255,255,255,0.2); }
+.cv-action-btn.delete:hover { background: #e53935; }
 
 .cv-header {
   background: linear-gradient(135deg, rgba(40, 42, 68, 0.8), rgba(28, 28, 44, 0.9));
@@ -717,3 +737,81 @@ input[type='text']:focus {
 .cv-rule-card.must-do h4 { color: #4caf50; }
 .cv-rule-card.must-not-do h4 { color: #f44336; }
 .cv-notes { font-style: italic; }
+
+/* --- Persona Form --- */
+.persona-form-content {
+  background: #1e1e2f;
+  color: #e0e0e0;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 900px; /* Wider form */
+  height: 90%;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+.form-header {
+  padding: 25px 30px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  flex-shrink: 0;
+}
+.form-header h2 {
+  color: #fff;
+  margin: 0 0 5px;
+}
+.form-header p {
+  color: #a8b2ff;
+  margin: 0;
+}
+.form-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+  padding: 30px;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+.form-field {
+  margin-bottom: 15px;
+}
+.form-field label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #c0c0d0;
+}
+.form-field input, .form-field textarea {
+  width: 100%;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid rgba(255,255,255,0.2);
+  color: #fff;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1em;
+}
+.form-field input:focus, .form-field textarea:focus {
+  outline: none;
+  border-color: #2575fc;
+}
+.required-star { color: #f44336; margin-left: 4px; }
+.form-actions {
+  grid-column: 1 / -1; /* Span both columns */
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+  padding: 25px 30px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  flex-shrink: 0;
+}
+.form-actions button {
+  padding: 12px 25px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+}
+.cancel-btn { background: rgba(255,255,255,0.1); color: #fff; }
+.save-btn { background: #2575fc; color: #fff; }

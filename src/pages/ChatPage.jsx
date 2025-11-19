@@ -1,10 +1,11 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
 import InitialsAvatar from 'react-initials-avatar';
-import { startNewChat, sendMessage, getChatHistory, getConversations, getPersonas } from '../api';
+import { startNewChat, sendMessage, getChatHistory, getConversations, getPersonas, createPersona, updatePersona, deletePersona } from '../api';
 import { BackButton } from '../App';
 import PersonaDetailView from './PersonaDetailView';
-import { version } from '../../package.json'; // Import version
+import PersonaForm from './PersonaForm';
+import { version } from '../../package.json';
 
 // --- Icon Components ---
 const MenuIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> );
@@ -51,9 +52,12 @@ const formatUpdatedAt = (isoString) => {
 };
 
 // Reusable Persona Selector Component
-const PersonaSelector = ({ title, description, onSet, onCancel, onReview, currentPersonaId, personas }) => (
+const PersonaSelector = ({ title, description, onSet, onCancel, onReview, onCreate, currentPersonaId, personas }) => (
   <div className="prompt-content">
-    <h3>{title}</h3>
+    <div className="prompt-header">
+      <h3>{title}</h3>
+      <button className="create-new-btn" onClick={onCreate}>+ Create New</button>
+    </div>
     <p>{description}</p>
     <div className="prompt-options">
       {personas.map(persona => (
@@ -85,6 +89,7 @@ const ChatPage = () => {
   const [activePersona, setActivePersona] = useState(null);
   const [nextMessagePersonaId, setNextMessagePersonaId] = useState(null);
   const [personaToReview, setPersonaToReview] = useState(null);
+  const [editingPersona, setEditingPersona] = useState(null);
 
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -110,34 +115,30 @@ const ChatPage = () => {
     'linear-gradient(45deg, #ee0979, #ff6a00)',
   ];
 
+  const fetchPersonas = async () => {
+    const personasData = await getPersonas();
+    const personasWithGradients = personasData.map((persona, index) => ({
+      ...persona,
+      gradient: GRADIENT_PALETTE[index % GRADIENT_PALETTE.length],
+    }));
+    setPersonas(personasWithGradients);
+  };
+
   useEffect(() => {
-    const fetchInitialData = async () => {
-      const personasData = await getPersonas();
-      const personasWithGradients = personasData.map((persona, index) => ({
-        ...persona,
-        gradient: GRADIENT_PALETTE[index % GRADIENT_PALETTE.length],
-      }));
-      setPersonas(personasWithGradients);
-    };
-    fetchInitialData();
+    fetchPersonas();
   }, []);
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (personaToReview) {
-        return;
-      }
-
-      if (personaModalRef.current && !personaModalRef.current.contains(event.target)) { 
-        setShowPersonaModal(false); 
-      }
+      if (personaToReview || editingPersona) return;
+      if (personaModalRef.current && !personaModalRef.current.contains(event.target)) { setShowPersonaModal(false); }
       if (versionModalRef.current && !versionModalRef.current.contains(event.target)) {
         if (!event.target.closest('.icon-btn[title*="Current Model"]')) { setShowVersionModal(false); }
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => { document.removeEventListener("mousedown", handleClickOutside); };
-  }, [personaModalRef, versionModalRef, personaToReview]);
+  }, [personaModalRef, versionModalRef, personaToReview, editingPersona]);
 
   const fetchConversations = useCallback(async () => {
     const meta = await getConversations();
@@ -202,7 +203,7 @@ const ChatPage = () => {
 
     const updatedSession = await sendMessage(activeConversationId, currentInput, nextMessagePersonaId);
     
-    setNextMessagePersonaId(null); // Reset pending persona change
+    setNextMessagePersonaId(null);
     setActiveConversationMessages(updatedSession.history);
     const currentPersona = personas.find(p => p.prompt_id === updatedSession.persona_id);
     setActivePersona(currentPersona);
@@ -213,8 +214,28 @@ const ChatPage = () => {
   const handlePersonaChange = (newPersonaId) => {
     setNextMessagePersonaId(newPersonaId);
     const newPersona = personas.find(p => p.prompt_id === newPersonaId);
-    setActivePersona(newPersona); // Instantly update UI
+    setActivePersona(newPersona);
     setShowPersonaModal(false);
+  };
+
+  const handleSavePersona = async (formData) => {
+    if (formData.prompt_id) {
+      await updatePersona(formData.prompt_id, formData);
+    } else {
+      await createPersona(formData);
+    }
+    setEditingPersona(null);
+    await fetchPersonas();
+    setShowPersonaModal(true);
+  };
+
+  const handleDeletePersona = async (personaId) => {
+    if (window.confirm("Are you sure you want to delete this persona? This action cannot be undone.")) {
+      await deletePersona(personaId);
+      setPersonaToReview(null);
+      await fetchPersonas();
+      setShowPersonaModal(true);
+    }
   };
 
   const handleSetVersion = (version) => {
@@ -228,10 +249,29 @@ const ChatPage = () => {
 
   return (
     <div className="app-layout">
+      {editingPersona && (
+        <PersonaForm 
+          persona={editingPersona === 'new' ? null : editingPersona}
+          onSave={handleSavePersona}
+          onCancel={() => {
+            setEditingPersona(null);
+            setShowPersonaModal(true);
+          }}
+        />
+      )}
+
       {personaToReview && (
         <PersonaDetailView 
           persona={personaToReview} 
-          onClose={() => setPersonaToReview(null)} 
+          onClose={() => {
+            setPersonaToReview(null);
+            setShowPersonaModal(true);
+          }}
+          onEdit={() => {
+            setEditingPersona(personaToReview);
+            setPersonaToReview(null);
+          }}
+          onDelete={handleDeletePersona}
         />
       )}
 
@@ -244,7 +284,14 @@ const ChatPage = () => {
               currentPersonaId={nextMessagePersonaId || activePersona?.prompt_id}
               onSet={handlePersonaChange}
               onCancel={() => setShowPersonaModal(false)}
-              onReview={setPersonaToReview}
+              onReview={(persona) => {
+                setPersonaToReview(persona);
+                setShowPersonaModal(false);
+              }}
+              onCreate={() => {
+                setEditingPersona('new');
+                setShowPersonaModal(false);
+              }}
               personas={personas}
             />
           </div>
