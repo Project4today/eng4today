@@ -223,7 +223,7 @@ body {
 }
 
 .history-item.active {
-  background-color: #2575fc;
+  background-color: #007bff; /* Lighter blue */
   font-weight: 600;
   color: #fff;
 }
@@ -411,7 +411,7 @@ input[type='text']::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
 input[type='text']:focus {
-  border-color: #2575fc;
+  border-color: #007bff; /* Lighter blue */
 }
 
 .icon-btn {
@@ -527,7 +527,7 @@ input[type='text']:focus {
   text-shadow: 0 0 5px rgba(168, 178, 255, 0.5);
 }
 .create-new-btn {
-  background: #2575fc;
+  background: #007bff; /* Lighter blue */
   color: #fff;
   border: none;
   padding: 8px 12px;
@@ -567,8 +567,8 @@ input[type='text']:focus {
   background-color: rgba(255, 255, 255, 0.2);
 }
 .prompt-option-btn.active {
-  background-color: #2575fc;
-  border-color: #2575fc;
+  background-color: #007bff; /* Lighter blue */
+  border-color: #007bff; /* Lighter blue */
   font-weight: 600;
 }
 .review-btn {
@@ -863,7 +863,7 @@ input[type='text']:focus {
 }
 .form-field input:focus, .form-field textarea:focus {
   outline: none;
-  border-color: #2575fc;
+  border-color: #007bff; /* Lighter blue */
 }
 .required-star { color: #f44336; margin-left: 4px; }
 .form-actions {
@@ -884,4 +884,92 @@ input[type='text']:focus {
   border: none;
 }
 .cancel-btn { background: rgba(255,255,255,0.1); color: #fff; }
-.save-btn { background: #2575fc; color: #fff; }
+.save-btn { background: #007bff; color: #fff; } /* Lighter blue */
+
+/* --- Settings Menu --- */
+.settings-menu-container {
+  position: relative;
+}
+
+.theme-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  z-index: 20;
+  width: 150px;
+}
+
+.theme-menu-title {
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #fff;
+  padding: 5px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 5px;
+}
+
+.theme-menu .theme-btn {
+  background: none;
+  border: none;
+  color: #fff;
+  padding: 8px 12px;
+  border-radius: 8px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.theme-menu .theme-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-menu .theme-btn.active {
+    background-color: #007bff; /* Lighter blue */
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.dark-theme .theme-menu {
+  background: #333;
+  border: 1px solid #444;
+}
+
+.dark-theme .theme-menu-title {
+  color: #e0e0e0;
+  border-bottom: 1px solid #444;
+}
+
+.dark-theme .theme-menu .theme-btn {
+  color: #e0e0e0;
+}
+
+.dark-theme .theme-menu .theme-btn:hover {
+  background-color: #444;
+}
+
+.light-theme .theme-menu {
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.light-theme .theme-menu-title {
+  color: #1f1f1f;
+  border-bottom: 1px solid #ddd;
+}
+
+.light-theme .theme-menu .theme-btn {
+  color: #1f1f1f;
+}
+
+.light-theme .theme-menu .theme-btn:hover {
+  background-color: #eee;
+}

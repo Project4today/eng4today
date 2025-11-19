@@ -1,0 +1,54 @@
+/* light-theme-overrides.css */
+
+body.light-theme .app-header,
+body.light-theme .sidebar-header,
+body.light-theme .chat-header,
+body.light-theme .back-btn,
+body.light-theme .menu-btn,
+body.light-theme .icon-btn,
+body.light-theme .new-chat-btn,
+body.light-theme .persona-btn,
+body.light-theme .history-item,
+body.light-theme .sidebar-title,
+body.light-theme .chat-header h2,
+body.light-theme input[type='text'],
+body.light-theme .theme-menu-title,
+body.light-theme .theme-menu .theme-btn,
+body.light-theme .message.bot,
+body.light-theme .initials-avatar-wrapper .initials-avatar,
+body.light-theme .home-title,
+body.light-theme .home-subtitle,
+body.light-theme .feature-card h2,
+body.light-theme .feature-card p {
+  color: #000000 !important;
+}
+
+body.light-theme .history-item-date,
+body.light-theme .version-tag {
+    color: #555555 !important;
+}
+
+body.light-theme .disclaimer {
+    color: #888888 !important;
+}
+
+body.light-theme .disclaimer a {
+    color: #555555 !important;
+}
+
+body.light-theme .history-item.active {
+    background-color: #d9e7ff !important;
+    color: #000000 !important;
+}
+
+/* --- Feature Card Light Theme --- */
+body.light-theme .feature-card {
+    background: #ffffff;
+    border: 1px solid #dcdfe6;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+body.light-theme .feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}

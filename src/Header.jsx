@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { useTheme } from './contexts/ThemeContext';
 
 const SettingsIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -7,16 +8,42 @@ const SettingsIcon = () => (
   </svg>
 );
 
+const ThemeMenu = ({ currentTheme, onThemeChange }) => {
+    const getButtonClass = (themeName) => {
+        return `theme-btn ${currentTheme === themeName ? 'active' : ''}`;
+    };
+
+    return (
+        <div className="theme-menu">
+            <div className="theme-menu-title">Change Theme</div>
+            <button className={getButtonClass('fancy')} onClick={() => onThemeChange('fancy')}>Fancy Mode</button>
+            <button className={getButtonClass('dark')} onClick={() => onThemeChange('dark')}>Dark Mode</button>
+            <button className={getButtonClass('light')} onClick={() => onThemeChange('light')}>Light Mode</button>
+        </div>
+    );
+};
+
 const Header = () => {
+    const [showMenu, setShowMenu] = useState(false);
+    const { theme, changeTheme } = useTheme();
+
+    const handleThemeChange = (newTheme) => {
+        changeTheme(newTheme);
+        setShowMenu(false);
+    };
+
   return (
     <header className="app-header">
       <div className="header-left">
         {/* Future: Logo or App Name */}
       </div>
       <div className="header-right">
-        <button className="icon-btn">
-          <SettingsIcon />
-        </button>
+        <div className="settings-menu-container">
+            <button className="icon-btn" onClick={() => setShowMenu(!showMenu)}>
+              <SettingsIcon />
+            </button>
+            {showMenu && <ThemeMenu currentTheme={theme} onThemeChange={handleThemeChange} />}
+        </div>
       </div>
     </header>
   );
