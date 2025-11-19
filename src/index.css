@@ -219,6 +219,17 @@ body {
   flex-shrink: 0;
 }
 
+.sidebar-footer {
+  padding: 15px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.version-tag {
+  font-size: 0.8em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
 /* --- Chat Area --- */
 .chat-area {
   flex-grow: 1;
@@ -293,7 +304,6 @@ body {
 }
 
 .initials-avatar-wrapper {
-  /* The background is now set via inline styles */
   border: 2px solid rgba(255, 255, 255, 0.8);
 }
 
@@ -469,7 +479,12 @@ input[type='text']:focus {
   overflow-y: auto;
   padding-right: 10px; /* To avoid scrollbar overlapping content */
 }
+.prompt-option-container {
+  display: flex;
+  gap: 10px;
+}
 .prompt-option-btn {
+  flex-grow: 1;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
   color: #fff;
@@ -487,29 +502,29 @@ input[type='text']:focus {
   border-color: #2575fc;
   font-weight: 600;
 }
-.prompt-textarea {
-  width: 100%;
-  padding: 12px;
-  border-radius: 10px;
+.review-btn {
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(0, 0, 0, 0.2);
   color: #fff;
-  font-family: 'Inter', sans-serif;
-  font-size: 1em;
-  outline: none;
-  resize: vertical;
-  min-height: 100px;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.prompt-textarea:focus {
-  border-color: #2575fc;
+.review-btn:hover {
+  background-color: rgba(255, 255, 255, 0.25);
 }
+
 .prompt-modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   margin-top: 10px;
 }
-.prompt-modal-cancel-btn, .prompt-modal-set-btn {
+.prompt-modal-cancel-btn {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -520,40 +535,45 @@ input[type='text']:focus {
   font-weight: 500;
   transition: background-color 0.2s;
 }
-.prompt-modal-set-btn {
-  background: #2575fc;
-  border-color: #2575fc;
-}
 .prompt-modal-cancel-btn:hover { background-color: rgba(255, 255, 255, 0.2); }
-.prompt-modal-set-btn:hover { background-color: #1a60cc; }
 
-/* --- Pop-up for Message Config --- */
-.message-config-popup {
-  position: absolute;
-  bottom: 80px;
-  right: 20px;
-  width: 350px;
-  background: rgba(15, 15, 35, 0.8);
-  backdrop-filter: blur(15px);
-  border-radius: 15px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  padding: 20px;
-  z-index: 10;
-}
-
-/* --- Persona Modal --- */
-.prompt-modal-overlay {
+/* --- Persona Modal Overlays --- */
+.prompt-modal-overlay, .persona-cv-overlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 20;
+  
+  /* Smoother fade-in */
+  background-color: rgba(10, 15, 30, 0.0);
+  backdrop-filter: blur(0px);
+  animation: fadeInOverlay 0.3s ease forwards;
+}
+
+@keyframes fadeInOverlay {
+  to {
+    background-color: rgba(10, 15, 30, 0.4);
+    backdrop-filter: blur(8px);
+  }
+}
+
+.persona-cv-overlay {
+  z-index: 30;
+  background-color: rgba(10, 15, 30, 0.0);
+  backdrop-filter: blur(0px);
+  animation: fadeInCvOverlay 0.3s ease forwards;
+}
+
+@keyframes fadeInCvOverlay {
+  to {
+    background-color: rgba(10, 15, 30, 0.3);
+    backdrop-filter: blur(12px);
+  }
 }
 
 .prompt-modal-content {
@@ -571,3 +591,129 @@ input[type='text']:focus {
   color: #a8b2ff;
   text-shadow: 0 0 5px rgba(168, 178, 255, 0.5);
 }
+
+/* --- Persona CV Modal --- */
+.persona-cv-content {
+  background: #1e1e2f;
+  color: #e0e0e0;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 700px;
+  height: 85%;
+  max-height: 800px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.cv-close-btn {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #fff;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+.cv-close-btn:hover { background: rgba(255,255,255,0.2); }
+
+.cv-header {
+  background: linear-gradient(135deg, rgba(40, 42, 68, 0.8), rgba(28, 28, 44, 0.9));
+  padding: 30px;
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.cv-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  overflow: hidden;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+}
+.cv-avatar img, .initials-avatar-cv {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.initials-avatar-cv {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.initials-avatar-cv span {
+  font-size: 40px;
+  font-weight: 700;
+  color: #fff;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+.cv-header-info { text-align: left; }
+.cv-role-name {
+  margin: 0;
+  font-size: 2.5em;
+  font-weight: 700;
+  color: #fff;
+}
+.cv-expertise {
+  margin: 5px 0 0;
+  font-size: 1.1em;
+  color: #a8b2ff;
+  font-style: italic;
+}
+
+.cv-body {
+  padding: 30px;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+.cv-section { margin-bottom: 25px; }
+.cv-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.2em;
+  font-weight: 600;
+  color: #a8b2ff;
+  margin: 0 0 15px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+}
+.cv-section-content p {
+  margin: 0 0 10px;
+  line-height: 1.6;
+  color: #c0c0d0;
+}
+.cv-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+.cv-rules {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.cv-rule-card {
+  padding: 20px;
+  border-radius: 10px;
+  background: rgba(0,0,0,0.2);
+}
+.cv-rule-card h4 {
+  margin: 0 0 10px;
+  font-size: 1em;
+  font-weight: 600;
+}
+.cv-rule-card.must-do h4 { color: #4caf50; }
+.cv-rule-card.must-not-do h4 { color: #f44336; }
+.cv-notes { font-style: italic; }

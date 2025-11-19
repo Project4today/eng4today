@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import ReactMarkdown from 'react-markdown';
-// TODO: You need to install react-initials-avatar: npm install react-initials-avatar
 import InitialsAvatar from 'react-initials-avatar';
 import { startNewChat, sendMessage, getChatHistory, getConversations, getPersonas } from '../api';
 import { BackButton } from '../App';
+import PersonaDetailView from './PersonaDetailView';
+import { version } from '../../package.json'; // Import version
 
 // --- Icon Components ---
 const MenuIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg> );
@@ -13,14 +14,13 @@ const PersonaIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill
 const BoltIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> );
 const SparkleIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v2.35M16.24 7.76l-1.77 1.77M21 12h-2.35M16.24 16.24l-1.77-1.77M12 21v-2.35M7.76 16.24l1.77-1.77M3 12h2.35M7.76 7.76l1.77 1.77"/></svg> );
 const CustomIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"/><path d="M18 2l4 4-10 10H8v-4L18 2z"/></svg> );
+const EyeIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>;
 
 // --- Reusable Avatar Component ---
 const Avatar = ({ persona, className }) => {
-  // If avatar_url exists, use it
   if (persona?.avatar_url) {
     return <img src={persona.avatar_url} alt={persona.role_name} className={className} />;
   }
-  // Otherwise, fallback to InitialsAvatar with a dynamic gradient
   const style = { background: persona?.gradient || 'linear-gradient(45deg, #8a2be2, #4169e1)' };
   return (
     <div className={`${className} initials-avatar-wrapper`} style={style}>
@@ -51,19 +51,23 @@ const formatUpdatedAt = (isoString) => {
 };
 
 // Reusable Persona Selector Component
-const PersonaSelector = ({ title, description, onSet, onCancel, currentPersonaId, personas }) => (
+const PersonaSelector = ({ title, description, onSet, onCancel, onReview, currentPersonaId, personas }) => (
   <div className="prompt-content">
     <h3>{title}</h3>
     <p>{description}</p>
     <div className="prompt-options">
       {personas.map(persona => (
-        <button 
-          key={persona.prompt_id} 
-          className={`prompt-option-btn ${currentPersonaId === persona.prompt_id ? 'active' : ''}`}
-          onClick={() => onSet(persona.prompt_id)}
-        >
-          {persona.role_name}
-        </button>
+        <div key={persona.prompt_id} className="prompt-option-container">
+          <button 
+            className={`prompt-option-btn ${currentPersonaId === persona.prompt_id ? 'active' : ''}`}
+            onClick={() => onSet(persona.prompt_id)}
+          >
+            {persona.role_name}
+          </button>
+          <button className="review-btn" onClick={() => onReview(persona)}>
+            <EyeIcon />
+          </button>
+        </div>
       ))}
     </div>
     <div className="prompt-modal-actions">
@@ -80,6 +84,7 @@ const ChatPage = () => {
   
   const [activePersona, setActivePersona] = useState(null);
   const [nextMessagePersonaId, setNextMessagePersonaId] = useState(null);
+  const [personaToReview, setPersonaToReview] = useState(null);
 
   const [input, setInput] = useState('');
   const [isThinking, setIsThinking] = useState(false);
@@ -119,14 +124,20 @@ const ChatPage = () => {
 
   useEffect(() => {
     function handleClickOutside(event) {
-      if (personaModalRef.current && !personaModalRef.current.contains(event.target)) { setShowPersonaModal(false); }
+      if (personaToReview) {
+        return;
+      }
+
+      if (personaModalRef.current && !personaModalRef.current.contains(event.target)) { 
+        setShowPersonaModal(false); 
+      }
       if (versionModalRef.current && !versionModalRef.current.contains(event.target)) {
         if (!event.target.closest('.icon-btn[title*="Current Model"]')) { setShowVersionModal(false); }
       }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => { document.removeEventListener("mousedown", handleClickOutside); };
-  }, [personaModalRef, versionModalRef]);
+  }, [personaModalRef, versionModalRef, personaToReview]);
 
   const fetchConversations = useCallback(async () => {
     const meta = await getConversations();
@@ -217,6 +228,13 @@ const ChatPage = () => {
 
   return (
     <div className="app-layout">
+      {personaToReview && (
+        <PersonaDetailView 
+          persona={personaToReview} 
+          onClose={() => setPersonaToReview(null)} 
+        />
+      )}
+
       {showPersonaModal && (
         <div className="prompt-modal-overlay">
           <div className="prompt-modal-content" ref={personaModalRef}>
@@ -226,6 +244,7 @@ const ChatPage = () => {
               currentPersonaId={nextMessagePersonaId || activePersona?.prompt_id}
               onSet={handlePersonaChange}
               onCancel={() => setShowPersonaModal(false)}
+              onReview={setPersonaToReview}
               personas={personas}
             />
           </div>
@@ -283,6 +302,9 @@ const ChatPage = () => {
                 <span className="history-item-date">{formatUpdatedAt(convo.updated_at)}</span>
               </button>
             ))}
+          </div>
+          <div className="sidebar-footer">
+            <span className="version-tag">Version {version}</span>
           </div>
         </nav>
       </div>
