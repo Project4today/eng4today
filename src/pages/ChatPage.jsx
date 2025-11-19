@@ -393,17 +393,22 @@ const ChatPage = () => {
           {isThinking && <ThinkingIndicator persona={activePersona} />}
           <div ref={messagesEndRef} />
         </div>
-        <div className="input-area">
-          <button className="icon-btn persona-switcher-btn" onClick={() => setShowPersonaModal(true)} title="Switch Persona">
-            <Avatar persona={activePersona} className="chat-avatar-icon" />
-          </button>
-          <input ref={mainInputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} disabled={isThinking} placeholder="Type a message..."/>
-          <button className="icon-btn" onClick={() => setShowVersionModal(true)} title={`Current Model: ${botVersion}`}>
-            {botVersion.includes('pro') ? <SparkleIcon /> : (botVersion.includes('flash') ? <BoltIcon /> : <CustomIcon />)}
-          </button>
-          <button className="icon-btn" onClick={handleSend} disabled={!input.trim() || isThinking}>
-            <SendIcon />
-          </button>
+        <div className="input-area-wrapper">
+          <div className="input-area">
+            <button className="icon-btn persona-switcher-btn" onClick={() => setShowPersonaModal(true)} title="Switch Persona">
+              <Avatar persona={activePersona} className="chat-avatar-icon" />
+            </button>
+            <input ref={mainInputRef} type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} disabled={isThinking} placeholder="Type a message..."/>
+            <button className="icon-btn" onClick={() => setShowVersionModal(true)} title={`Current Model: ${botVersion}`}>
+              {botVersion.includes('pro') ? <SparkleIcon /> : (botVersion.includes('flash') ? <BoltIcon /> : <CustomIcon />)}
+            </button>
+            <button className="icon-btn" onClick={handleSend} disabled={!input.trim() || isThinking}>
+              <SendIcon />
+            </button>
+          </div>
+          <p className="disclaimer">
+            E4TD Chatbot may make mistakes. Please verify its answers and provide <a href="#">feedback here</a> to help us improve.
+          </p>
         </div>
       </main>
     </div>

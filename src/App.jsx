@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ChatPage from './pages/ChatPage';
 import IeltsPage from './pages/IeltsPage';
+import Header from './Header'; // Import the new Header component
 import './App.css';
 
 // --- Reusable Back Button Component ---
@@ -20,7 +21,12 @@ export const BackButton = () => {
 
 // A layout component to wrap pages that need the centered, padded container
 const PageContainer = ({ children }) => {
-  return <div className="page-container">{children}</div>;
+  return (
+    <div className="page-container">
+      <Header />
+      {children}
+    </div>
+  );
 };
 
 function App() {
