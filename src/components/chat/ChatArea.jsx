@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import InitialsAvatar from 'react-initials-avatar';
+import SpeechRecognition, { useSpeechRecognition } from 'react-speech-recognition';
 import { useChat } from '../../contexts/ChatContext';
 import { BackButton } from '../../App';
 import Button from '../ui/Button';
@@ -12,6 +13,7 @@ const SendIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="c
 const BoltIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg> );
 const SparkleIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3v2.35M16.24 7.76l-1.77 1.77M21 12h-2.35M16.24 16.24l-1.77-1.77M12 21v-2.35M7.76 16.24l1.77-1.77M3 12h2.35M7.76 7.76l1.77 1.77"/></svg> );
 const CustomIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34"/><path d="M18 2l4 4-10 10H8v-4L18 2z"/></svg> );
+const MicrophoneIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg> );
 
 /**
  * @typedef {object} Persona
@@ -43,12 +45,6 @@ const CustomIcon = () => ( <svg width="24" height="24" viewBox="0 0 24 24" fill=
  * @property {string} botVersion - The current bot version.
  */
 
-/**
- * Reusable Avatar Component
- * @param {object} props
- * @param {Persona} props.persona - The persona object.
- * @param {string} props.className - Additional CSS classes for the avatar.
- */
 const Avatar = ({ persona, className }) => {
   if (persona?.avatar_url) {
     return <img src={persona.avatar_url} alt={persona.role_name} className={className} />;
@@ -74,10 +70,6 @@ const ThinkingIndicator = ({ persona }) => (
   </div>
 );
 
-/**
- * ChatArea Component
- * @returns {JSX.Element}
- */
 const ChatArea = () => {
   const {
     activeConversationMessages,
@@ -95,19 +87,58 @@ const ChatArea = () => {
     botVersion,
   } = /** @type {ChatContextType} */ (useChat());
 
+  const [isVoiceMode, setIsVoiceMode] = useState(false);
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition
+  } = useSpeechRecognition();
   const messagesEndRef = useRef(null);
   const textareaRef = useRef(null);
+  const sendTimeout = useRef(null);
 
+  // Auto-scroll to bottom
   useEffect(() => { messagesEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [activeConversationMessages, isThinking]);
 
+  // Auto-resize textarea
   useEffect(() => {
     const textarea = textareaRef.current;
     if (textarea) {
       textarea.style.height = 'auto';
-      const scrollHeight = textarea.scrollHeight;
-      textarea.style.height = `${scrollHeight}px`;
+      textarea.style.height = `${textarea.scrollHeight}px`;
     }
   }, [input]);
+
+  // Update input from transcript when in voice mode
+  useEffect(() => {
+    if (isVoiceMode) {
+      setInput(transcript);
+    }
+  }, [transcript, isVoiceMode, setInput]);
+
+  // Auto-send on pause
+  useEffect(() => {
+    clearTimeout(sendTimeout.current);
+    if (isVoiceMode && transcript) {
+      sendTimeout.current = setTimeout(() => {
+        if (transcript.trim()) {
+          handleSend();
+          resetTranscript();
+        }
+      }, 2000); // 2-second pause
+    }
+    return () => clearTimeout(sendTimeout.current);
+  }, [transcript, isVoiceMode, handleSend, resetTranscript]);
+
+  // Control listening state based on isVoiceMode and isThinking
+  useEffect(() => {
+    if (isVoiceMode && !isThinking) {
+      SpeechRecognition.startListening({ continuous: true });
+    } else {
+      SpeechRecognition.stopListening();
+    }
+  }, [isVoiceMode, isThinking]);
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -116,7 +147,21 @@ const ChatArea = () => {
     }
   };
 
+  const toggleVoiceMode = () => {
+    const turningOn = !isVoiceMode;
+    if (turningOn) {
+      resetTranscript();
+    } else {
+      clearTimeout(sendTimeout.current);
+    }
+    setIsVoiceMode(turningOn);
+  };
+
   const activeTitle = conversationsMeta.find(c => c.session_id === activeConversationId)?.title || "New Chat";
+
+  const placeholder = listening
+    ? "Listening..."
+    : "Type a message... (Shift + Enter for new line)";
 
   return (
     <main className="chat-area">
@@ -139,13 +184,13 @@ const ChatArea = () => {
       </div>
       <div className="input-area-wrapper">
         <div className="chat-input-area">
-          <Textarea 
+          <Textarea
             ref={textareaRef}
-            value={input} 
-            onChange={(e) => setInput(e.target.value)} 
-            onKeyPress={handleKeyPress} 
-            disabled={isThinking} 
-            placeholder="Type a message... (Shift + Enter for new line)"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyPress={handleKeyPress}
+            disabled={isThinking || listening}
+            placeholder={placeholder}
             rows={1}
             className="chat-input"
           />
@@ -155,6 +200,11 @@ const ChatArea = () => {
           <Button variant="icon" onClick={() => setShowVersionModal(true)} title={`Current Model: ${botVersion}`}>
             {botVersion.includes('pro') ? <SparkleIcon /> : (botVersion.includes('flash') ? <BoltIcon /> : <CustomIcon />)}
           </Button>
+          {browserSupportsSpeechRecognition && (
+            <Button variant="icon" onClick={toggleVoiceMode} className={listening ? 'listening' : ''}>
+              <MicrophoneIcon />
+            </Button>
+          )}
           <Button variant="icon" onClick={handleSend} disabled={!input.trim() || isThinking}>
             <SendIcon />
           </Button>
