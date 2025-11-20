@@ -79,3 +79,123 @@ body.dark-theme .theme-menu .theme-btn.active {
     background-color: #007bff; /* Lighter blue */
     color: #ffffff;
 }
+
+/* --- Prompt Modal Dark Theme Overrides --- */
+body.dark-theme .prompt-modal-content {
+    background: #2c2c2c;
+    border: 1px solid #3a3a3a;
+}
+
+body.dark-theme .prompt-modal-content p,
+body.dark-theme .prompt-modal-content h3 {
+    color: #f5f5f5;
+}
+
+body.dark-theme .prompt-option-btn {
+    background: #3a3a3a;
+    border: 1px solid #4a4a4a;
+    color: #f5f5f5;
+}
+
+body.dark-theme .prompt-option-btn:hover {
+    background-color: #4a4a4a;
+}
+
+body.dark-theme .prompt-option-btn.active {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #fff;
+}
+
+body.dark-theme .review-btn {
+    background: #3a3a3a;
+    border: 1px solid #4a4a4a;
+    color: #f5f5f5;
+}
+
+body.dark-theme .review-btn:hover {
+    background-color: #4a4a4a;
+}
+
+body.dark-theme .prompt-modal-cancel-btn {
+    background: #3a3a3a;
+    color: #f5f5f5;
+    border: 1px solid #4a4a4a;
+}
+
+body.dark-theme .prompt-modal-cancel-btn:hover {
+    background: #4a4a4a;
+}
+
+body.dark-theme .create-new-btn {
+    background: #007bff;
+    color: #fff;
+}
+
+/* Version Modal Fixes */
+body.dark-theme .prompt-textarea {
+    background: #3a3a3a;
+    color: #f5f5f5;
+    border: 1px solid #4a4a4a;
+    margin-top: 15px;
+    padding: 10px;
+    width: 100%;
+    border-radius: 8px;
+}
+
+body.dark-theme .prompt-modal-set-btn {
+    background: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+}
+
+/* --- Persona CV and Form Dark Theme --- */
+body.dark-theme .persona-cv-content,
+body.dark-theme .persona-form-content {
+    background: #1f1f1f;
+    color: #f5f5f5;
+    border: 1px solid #2c2c2c;
+}
+
+body.dark-theme .cv-header {
+    background: #2c2c2c;
+    border-bottom: 1px solid #3a3a3a;
+}
+
+body.dark-theme .cv-role-name,
+body.dark-theme .cv-expertise,
+body.dark-theme .cv-section-title,
+body.dark-theme .cv-section-content p,
+body.dark-theme .cv-rule-card h4,
+body.dark-theme .form-header h2,
+body.dark-theme .form-header p,
+body.dark-theme .form-field label {
+    color: #f5f5f5 !important;
+}
+
+body.dark-theme .cv-rule-card {
+    background: #2c2c2c;
+    border: 1px solid #3a3a3a;
+}
+
+body.dark-theme .form-field input,
+body.dark-theme .form-field textarea {
+    background: #2c2c2c;
+    border: 1px solid #3a3a3a;
+    color: #f5f5f5;
+}
+
+body.dark-theme .form-actions {
+    border-top: 1px solid #2c2c2c;
+}
+
+body.dark-theme .cv-action-btn,
+body.dark-theme .cancel-btn {
+    background: #2c2c2c;
+    color: #f5f5f5;
+}

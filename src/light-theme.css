@@ -77,6 +77,6 @@ body.light-theme .theme-menu .theme-btn:hover {
 }
 
 body.light-theme .theme-menu .theme-btn.active {
-    background-color: #007bff; /* Lighter blue */
+    background-color: #d9e7ff !important; /* Lighter blue */
     color: #ffffff;
 }

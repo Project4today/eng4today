@@ -256,10 +256,12 @@ const ChatPage = () => {
   };
 
   const handleSetVersion = (version) => {
-    const newVersion = version || 'gemini-flash-latest';
+    if (!version) return;
+    const newVersion = version.trim();
     setBotVersion(newVersion);
     localStorage.setItem('bot_version', newVersion);
     setShowVersionModal(false);
+    setCustomVersionInput('');
   };
 
   const activeTitle = conversationsMeta.find(c => c.session_id === activeConversationId)?.title || "New Chat";
