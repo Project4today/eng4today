@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useTheme } from './contexts/ThemeContext';
+import { useTheme } from './contexts/useTheme'; // Corrected import path
+import Button from './components/ui/Button';
 
 const SettingsIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -9,16 +10,12 @@ const SettingsIcon = () => (
 );
 
 const ThemeMenu = ({ currentTheme, onThemeChange }) => {
-    const getButtonClass = (themeName) => {
-        return `theme-btn ${currentTheme === themeName ? 'active' : ''}`;
-    };
-
     return (
         <div className="theme-menu">
             <div className="theme-menu-title">Change Theme</div>
-            <button className={getButtonClass('fancy')} onClick={() => onThemeChange('fancy')}>Fancy Mode</button>
-            <button className={getButtonClass('dark')} onClick={() => onThemeChange('dark')}>Dark Mode</button>
-            <button className={getButtonClass('light')} onClick={() => onThemeChange('light')}>Light Mode</button>
+            <Button variant="secondary" className={currentTheme === 'fancy' ? 'active' : ''} onClick={() => onThemeChange('fancy')}>Fancy Mode</Button>
+            <Button variant="secondary" className={currentTheme === 'dark' ? 'active' : ''} onClick={() => onThemeChange('dark')}>Dark Mode</Button>
+            <Button variant="secondary" className={currentTheme === 'light' ? 'active' : ''} onClick={() => onThemeChange('light')}>Light Mode</Button>
         </div>
     );
 };
@@ -39,9 +36,9 @@ const Header = () => {
       </div>
       <div className="header-right">
         <div className="settings-menu-container">
-            <button className="icon-btn" onClick={() => setShowMenu(!showMenu)}>
+            <Button variant="icon" onClick={() => setShowMenu(!showMenu)}>
               <SettingsIcon />
-            </button>
+            </Button>
             {showMenu && <ThemeMenu currentTheme={theme} onThemeChange={handleThemeChange} />}
         </div>
       </div>

@@ -1,20 +1,21 @@
+/* src/pages/HomePage.css */
+
 .home-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%; /* Use 100% to fill the #root container */
+  height: 100%;
   width: 100%;
-  color: #fff;
+  color: var(--text-primary);
   text-align: center;
   position: relative;
   overflow: hidden;
-  /* Padding is removed from here to allow true full-screen */
+  padding: 20px;
 }
 
 .home-content {
   max-width: 800px;
   z-index: 2;
-  padding: 20px; /* Padding is applied to the content, not the container */
 }
 
 .home-title {
@@ -35,22 +36,9 @@
   gap: 30px;
 }
 
+/* The .feature-card class is now just for layout, not appearance */
 .feature-card {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 15px;
-  padding: 30px;
   width: 300px;
-  text-decoration: none;
-  color: #fff;
-  transition: transform 0.3s, box-shadow 0.3s;
-  z-index: 2;
-}
-
-.feature-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.5);
 }
 
 .feature-card h2 {
@@ -65,6 +53,7 @@
   line-height: 1.6;
 }
 
+/* The home-decoration is a purely decorative element, so it can keep its styles */
 .home-decoration {
   position: absolute;
   width: 800px;

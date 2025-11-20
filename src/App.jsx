@@ -3,9 +3,11 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import ChatPage from './pages/ChatPage';
 import IeltsPage from './pages/IeltsPage';
-import Header from './Header'; // Import the new Header component
+import MainLayout from './components/layout/MainLayout';
+import { ChatProvider } from './contexts/ChatContext';
 
 // --- Reusable Back Button Component ---
+// This can be moved to a UI components directory in Phase 3
 export const BackButton = () => {
   const navigate = useNavigate();
   return (
@@ -18,34 +20,29 @@ export const BackButton = () => {
   );
 };
 
-// A layout component to wrap pages that need the centered, padded container
-const PageContainer = ({ children }) => {
-  return (
-    <div className="page-container">
-      <Header />
-      {children}
-    </div>
-  );
-};
-
 function App() {
   return (
     <Routes>
+      {/* HomePage does not use the MainLayout */}
       <Route path="/" element={<HomePage />} />
+
+      {/* Routes that share the main app layout */}
       <Route 
         path="/chat" 
         element={
-          <PageContainer>
-            <ChatPage />
-          </PageContainer>
+          <MainLayout>
+            <ChatProvider>
+              <ChatPage />
+            </ChatProvider>
+          </MainLayout>
         } 
       />
       <Route 
         path="/ielts" 
         element={
-          <PageContainer>
+          <MainLayout>
             <IeltsPage />
-          </PageContainer>
+          </MainLayout>
         } 
       />
     </Routes>

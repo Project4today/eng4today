@@ -1,0 +1,113 @@
+/* src/theme.css */
+
+/* 
+  This file defines the color palette for all three themes using CSS variables.
+  - :root sets the default "Fancy" theme.
+  - body.dark-theme and body.light-theme override these variables.
+  - All other CSS files will use these variables (e.g., color: var(--text-primary)).
+*/
+
+:root {
+  /* --- FANCY THEME (Default) --- */
+
+  /* Backgrounds */
+  --bg-body: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  --bg-app-layout: rgba(255, 255, 255, 0.15);
+  --bg-sidebar: rgba(255, 255, 255, 0.1);
+  --bg-chat-area: transparent;
+  --bg-input: rgba(0, 0, 0, 0.2);
+  --bg-message-bot: rgba(0, 0, 0, 0.2);
+  --bg-message-user: #00c6ff;
+  --bg-hover: rgba(255, 255, 255, 0.1);
+  --bg-active: #007bff;
+
+  /* Text */
+  --text-primary: #ffffff;
+  --text-secondary: #e0e0e0;
+  --text-placeholder: rgba(255, 255, 255, 0.6);
+  --text-on-accent: #ffffff;
+
+  /* Borders */
+  --border-primary: rgba(255, 255, 255, 0.2);
+  --border-input-focus: #007bff;
+
+  /* Accent & Special Colors */
+  --accent-primary: #007bff;
+  --backdrop-filter: blur(25px);
+  --shadow-primary: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+
+  /* Modals */
+  --bg-modal-overlay: rgba(10, 15, 30, 0.4);
+  --bg-modal-content: rgba(15, 15, 35, 0.8);
+  --modal-backdrop-filter: blur(8px);
+}
+
+body.dark-theme {
+  /* --- DARK THEME --- */
+
+  /* Backgrounds */
+  --bg-body: #121212;
+  --bg-app-layout: #1a1a1a;
+  --bg-sidebar: #1a1a1a;
+  --bg-chat-area: #1f1f1f;
+  --bg-input: #2c2c2c;
+  --bg-message-bot: #2c2c2c;
+  --bg-message-user: #007bff;
+  --bg-hover: #2c2c2c;
+  --bg-active: #007bff;
+
+  /* Text */
+  --text-primary: #f5f5f5;
+  --text-secondary: #a0a0a0;
+  --text-placeholder: #888;
+  --text-on-accent: #ffffff;
+
+  /* Borders */
+  --border-primary: #2c2c2c;
+  --border-input-focus: #007bff;
+
+  /* Accent & Special Colors */
+  --accent-primary: #007bff;
+  --backdrop-filter: none;
+  --shadow-primary: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+
+  /* Modals */
+  --bg-modal-overlay: rgba(0, 0, 0, 0.6);
+  --bg-modal-content: #2c2c2c;
+  --modal-backdrop-filter: blur(5px);
+}
+
+body.light-theme {
+  /* --- LIGHT THEME --- */
+
+  /* Backgrounds */
+  --bg-body: #f0f2f5;
+  --bg-app-layout: #ffffff;
+  --bg-sidebar: #f7f7f7;
+  --bg-chat-area: #ffffff;
+  --bg-input: #e9ebee;
+  --bg-message-bot: #e9ebee;
+  --bg-message-user: #007bff;
+  --bg-hover: #e9ebee;
+  --bg-active: #d9e7ff;
+
+  /* Text */
+  --text-primary: #000000;
+  --text-secondary: #555555;
+  --text-placeholder: #8a8d91;
+  --text-on-accent: #000000;
+
+  /* Borders */
+  --border-primary: #dcdfe6;
+  --border-input-focus: #007bff;
+
+  /* Accent & Special Colors */
+  --accent-primary: #007bff;
+  --backdrop-filter: none;
+  --shadow-primary: 0 4px 20px 0 rgba(0, 0, 0, 0.08);
+
+  /* Modals */
+  --bg-modal-overlay: rgba(0, 0, 0, 0.4);
+  --bg-modal-content: #ffffff;
+  --modal-backdrop-filter: blur(5px);
+}

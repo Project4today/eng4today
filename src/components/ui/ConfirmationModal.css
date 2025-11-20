@@ -1,0 +1,26 @@
+/* src/components/ui/ConfirmationModal.css */
+
+.confirmation-modal-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  text-align: center;
+}
+
+.confirmation-modal-content h3 {
+  margin: 0;
+  font-size: 1.5em;
+  color: var(--text-primary);
+}
+
+.confirmation-modal-content p {
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.confirmation-modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}

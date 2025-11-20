@@ -1,0 +1,19 @@
+/* src/components/ui/Input.css */
+
+.form-input,
+.form-textarea {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-primary);
+  color: var(--text-primary);
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 1em;
+  font-family: 'Inter', sans-serif;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--border-input-focus);
+}

@@ -1,0 +1,18 @@
+/* src/components/ui/Card.css */
+
+.card {
+  background: var(--bg-app-layout);
+  backdrop-filter: var(--backdrop-filter);
+  border: 1px solid var(--border-primary);
+  border-radius: 15px;
+  padding: 30px;
+  text-decoration: none;
+  color: var(--text-primary);
+  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: var(--shadow-primary);
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2); /* A slightly more pronounced shadow on hover */
+}
