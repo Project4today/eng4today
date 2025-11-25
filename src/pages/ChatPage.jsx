@@ -7,7 +7,7 @@ import Button from '../components/ui/Button';
 import Textarea from '../components/ui/Textarea';
 import Sidebar from '../components/chat/Sidebar';
 import ChatArea from '../components/chat/ChatArea';
-import ConfirmationModal from '../components/ui/ConfirmationModal'; // Import ConfirmationModal
+import ConfirmationModal from '../components/ui/ConfirmationModal';
 
 const EyeIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"
                            strokeLinecap="round" strokeLinejoin="round">
@@ -72,7 +72,7 @@ const ChatPage = () => {
         customVersionInput,
         setCustomVersionInput,
         handleSavePersona,
-        handleDeletePersona: contextHandleDeletePersona, // Rename to avoid conflict
+        handleDeletePersona: contextHandleDeletePersona,
     } = useChat();
 
     const [showConfirmDeleteModal, setShowConfirmDeleteModal] = React.useState(false);
@@ -90,7 +90,7 @@ const ChatPage = () => {
     const handleDeleteClick = (persona) => {
         setPersonaToDelete(persona);
         setShowConfirmDeleteModal(true);
-        setShowPersonaModal(false); // FIX: Hide the persona selection modal
+        setShowPersonaModal(false);
     };
 
     const confirmDeletePersona = async () => {
@@ -105,7 +105,7 @@ const ChatPage = () => {
             }
             setPersonaToDelete(null);
             setShowConfirmDeleteModal(false);
-            setShowPersonaModal(true); // Re-open persona selection modal
+            setShowPersonaModal(true);
         }
     };
 
@@ -126,7 +126,7 @@ const ChatPage = () => {
                     onSave={handleSavePersona}
                     onCancel={() => {
                         setEditingPersona(null);
-                        setShowPersonaModal(true); // Re-open persona selection modal
+                        setShowPersonaModal(true);
                     }}
                 />
             )}
@@ -136,7 +136,7 @@ const ChatPage = () => {
                     persona={personaToReview}
                     onClose={() => {
                         setPersonaToReview(null);
-                        setShowPersonaModal(true); // Re-open persona selection modal
+                        setShowPersonaModal(true);
                     }}
                     onEdit={() => {
                         setEditingPersona(personaToReview);
@@ -157,7 +157,7 @@ const ChatPage = () => {
                         setShowPersonaModal(false);
                         setEditingPersona('new');
                     }}
-                    onDelete={handleDeleteClick} // Pass the new delete handler
+                    onDelete={handleDeleteClick}
                     personas={personas}
                 />
             </Modal>
@@ -187,16 +187,16 @@ const ChatPage = () => {
                     <Button onClick={() => handleSetVersion(customVersionInput)}>Apply Custom</Button>
                 </div>
             </Modal>
-
+            
             <Sidebar/>
-            <ChatArea/>
+            <ChatArea />
 
             <ConfirmationModal
                 isOpen={showConfirmDeleteModal}
                 onClose={() => {
                     setShowConfirmDeleteModal(false);
                     setPersonaToDelete(null);
-                    setShowPersonaModal(true); // Re-open persona selection modal
+                    setShowPersonaModal(true);
                 }}
                 onConfirm={confirmDeletePersona}
                 title="Confirm Persona Deletion"

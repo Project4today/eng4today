@@ -7,11 +7,11 @@ import {
   getPersonas, 
   createPersona, 
   updatePersona, 
-  deletePersona 
+  deletePersona,
+  getVoices
 } from '../api';
-import { ChatContext } from './ChatContextDefinition'; // Import ChatContext from its own file
+import { ChatContext } from './ChatContextDefinition';
 
-// Custom hook for accessing chat context
 export const useChat = () => {
   const context = useContext(ChatContext);
   if (context === undefined) {
@@ -25,6 +25,7 @@ export const ChatProvider = ({ children }) => {
   const [activeConversationId, setActiveConversationId] = useState(null);
   const [activeConversationMessages, setActiveConversationMessages] = useState([]);
   const [personas, setPersonas] = useState([]);
+  const [voices, setVoices] = useState([]);
   
   const [activePersona, setActivePersona] = useState(null);
   const [nextMessagePersonaId, setNextMessagePersonaId] = useState(null);
@@ -50,6 +51,18 @@ export const ChatProvider = ({ children }) => {
     'linear-gradient(45deg, #ee0979, #ff6a00)',
   ], []);
 
+  useEffect(() => {
+    const loadVoices = async () => {
+      try {
+        const voicesData = await getVoices();
+        setVoices(voicesData);
+      } catch (error) {
+        console.error("Failed to load voices on startup:", error);
+      }
+    };
+    loadVoices();
+  }, []);
+
   const fetchPersonas = useCallback(async () => {
     const personasData = await getPersonas();
     const personasWithGradients = personasData.map((persona, index) => ({
@@ -57,6 +70,7 @@ export const ChatProvider = ({ children }) => {
       gradient: GRADIENT_PALETTE[index % GRADIENT_PALETTE.length],
     }));
     setPersonas(personasWithGradients);
+    return personasWithGradients;
   }, [GRADIENT_PALETTE]);
 
   useEffect(() => {
@@ -135,6 +149,7 @@ export const ChatProvider = ({ children }) => {
       setActiveConversationMessages(updatedSession.history);
       const currentPersona = personas.find(p => p.prompt_id === updatedSession.persona_id);
       setActivePersona(currentPersona);
+
     } catch (error) {
       console.error("Failed to send message:", error);
     } finally {
@@ -144,12 +159,21 @@ export const ChatProvider = ({ children }) => {
 
   const handleSavePersona = async (formData) => {
     try {
+      let savedPersona;
       if (formData.prompt_id) {
-        await updatePersona(formData.prompt_id, formData);
+        savedPersona = await updatePersona(formData.prompt_id, formData);
+        setPersonas(prev => prev.map(p => p.prompt_id === savedPersona.prompt_id ? { ...p, ...savedPersona } : p));
+        if (activePersona?.prompt_id === savedPersona.prompt_id) {
+          setActivePersona(prev => ({ ...prev, ...savedPersona }));
+        }
       } else {
-        await createPersona(formData);
+        savedPersona = await createPersona(formData);
+        const newPersonaWithGradient = {
+          ...savedPersona,
+          gradient: GRADIENT_PALETTE[personas.length % GRADIENT_PALETTE.length],
+        };
+        setPersonas(prev => [...prev, newPersonaWithGradient]);
       }
-      await fetchPersonas();
       setEditingPersona(null);
       setShowPersonaModal(true);
     } catch (error) {
@@ -160,8 +184,7 @@ export const ChatProvider = ({ children }) => {
   const handleDeletePersona = async (personaId) => {
     try {
       await deletePersona(personaId);
-      await fetchPersonas(); // Refresh the list of personas
-      // Optionally, if the deleted persona was the active one, clear activePersona
+      setPersonas(prev => prev.filter(p => p.prompt_id !== personaId));
       if (activePersona?.prompt_id === personaId) {
         setActivePersona(null); 
       }
@@ -178,6 +201,7 @@ export const ChatProvider = ({ children }) => {
     setActiveConversationId,
     activeConversationMessages,
     personas,
+    voices,
     activePersona,
     setActivePersona,
     nextMessagePersonaId,

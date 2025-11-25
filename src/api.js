@@ -18,6 +18,34 @@ async function handleResponse(response) {
   return response.json();
 }
 
+// --- Voices ---
+/**
+ * @typedef {Object} Voice
+ * @property {string} id
+ * @property {string} name
+ * @property {string} gender
+ * @property {string} language_code
+ * @property {string} language_name
+ */
+
+/**
+ * Fetches all available voices from the API.
+ * @returns {Promise<Voice[]>} A promise that resolves to an array of voice objects.
+ */
+export async function getVoices() {
+  try {
+    const response = await fetch(`${API_BASE_URL}/voices`, {
+      method: 'GET',
+      headers: { 'accept': 'application/json' },
+    });
+    return await handleResponse(response);
+  } catch (error) {
+    console.error("Error fetching voices:", error);
+    throw error;
+  }
+}
+
+
 // --- Persona CRUD ---
 
 /**

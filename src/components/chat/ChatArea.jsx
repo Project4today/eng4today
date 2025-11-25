@@ -37,7 +37,6 @@ const AutoTalkIcon = ({ enabled }) => (
     </svg>
 );
 
-
 const Avatar = ({ persona, className }) => {
   if (persona?.avatar_url) {
     return <img src={persona.avatar_url} alt={persona.role_name} className={className} />;
