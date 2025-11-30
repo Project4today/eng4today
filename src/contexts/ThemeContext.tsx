@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ThemeContext } from './ThemeContextDefinition';
 
 export const ThemeProvider = ({ children }) => {
@@ -8,8 +8,8 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     const bodyClasses = document.body.classList;
-    // This is the only logic needed. CSS variables handle the rest.
-    bodyClasses.remove('fancy-theme', 'dark-theme', 'light-theme');
+    // Remove all possible theme classes before adding the new one
+    bodyClasses.remove('fancy-theme', 'dark-theme', 'light-theme', 'monochrome-theme');
     bodyClasses.add(`${theme}-theme`);
     localStorage.setItem('app-theme', theme);
   }, [theme]);

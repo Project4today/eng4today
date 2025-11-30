@@ -10,6 +10,8 @@
   border-radius: 8px;
   font-size: 1em;
   font-family: 'Inter', sans-serif;
+  display: flex;
+  align-items: center;
 }
 
 .form-input:focus,

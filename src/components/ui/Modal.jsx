@@ -35,10 +35,10 @@ const Modal = ({ children, isOpen, onClose }) => {
   return (
     <div className="modal-overlay">
       <div className="modal-container" ref={modalRef}>
-        <Button variant="icon" className="modal-close-btn" onClick={onClose}>
-          <CloseIcon />
-        </Button>
         <div className="modal-content">
+          <Button variant="icon" className="modal-close-btn" onClick={onClose}>
+            <CloseIcon />
+          </Button>
           {children}
         </div>
       </div>

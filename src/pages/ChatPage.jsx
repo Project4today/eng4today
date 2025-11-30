@@ -1,4 +1,5 @@
 import React from 'react';
+import InitialsAvatar from 'react-initials-avatar';
 import {useChat} from '../contexts/ChatContext';
 import PersonaDetailView from './PersonaDetailView';
 import PersonaForm from './PersonaForm';
@@ -14,6 +15,14 @@ const EyeIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none
     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
     <circle cx="12" cy="12" r="3"></circle>
 </svg>;
+
+const EditIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+    </svg>
+);
+
 const DeleteIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                               strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <polyline points="3 6 5 6 21 6"></polyline>
@@ -23,34 +32,96 @@ const DeleteIcon = () => <svg width="16" height="16" viewBox="0 0 24 24" fill="n
 </svg>;
 
 
-const PersonaSelector = ({onSet, onReview, onCreate, onDelete, currentPersonaId, personas}) => (
-    <div className="prompt-content">
-        <div className="prompt-header">
-            <h3>Switch AI Persona</h3>
-            <Button onClick={onCreate}>+ Create New</Button>
+const PersonaSelector = ({ onSet, onReview, onEdit, onCreate, onDelete, currentPersonaId, personas }) => {
+    const sortedPersonas = [...personas].sort((a, b) => a.prompt_id - b.prompt_id);
+
+    return (
+        <div className="prompt-content">
+            <div className="prompt-header">
+                <h3>Switch AI Persona</h3>
+                <Button onClick={onCreate}>+ Create New</Button>
+            </div>
+            <p>Select a new persona for the current conversation.</p>
+            <div className="prompt-options scrollable-table-container">
+                <table className="w-full border-collapse table-fixed">
+                    <colgroup>
+                        <col style={{ width: '5%' }} />
+                        <col style={{ width: '15%' }} />
+                        <col style={{ width: '20%' }} />
+                        <col style={{ width: '45%' }} />
+                        <col style={{ width: '15%' }} />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th className="p-2 text-left">ID</th>
+                            <th className="p-2 text-left">Avatar</th>
+                            <th className="p-2 text-left">Persona</th>
+                            <th className="p-2 text-left">Primary Goal</th>
+                            <th className="p-2 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {sortedPersonas.map(persona => (
+                            <tr
+                                key={persona.prompt_id}
+                                className={currentPersonaId === persona.prompt_id ? 'selected-persona' : ''}
+                                onClick={() => onSet(persona.prompt_id)}
+                            >
+                                <td className="p-2 truncate text-left">{persona.prompt_id}</td>
+                                <td className="p-2 text-left">
+                                    <div className="w-6 h-6 rounded-full mx-auto">
+                                        {persona.avatar_url ? (
+                                            <img
+                                                src={persona.avatar_url}
+                                                alt={persona.role_name}
+                                                className="w-full h-full rounded-full object-cover w-35-h-auto"
+                                            />
+                                        ) : (
+                                            <div
+                                                className="w-full h-full rounded-full initials-avatar-wrapper"
+                                                style={{ background: persona?.gradient || 'linear-gradient(45deg, #8a2be2, #4169e1)' }}
+                                            >
+                                                <InitialsAvatar name={persona?.role_name || 'AI'} />
+                                            </div>
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="p-2 truncate text-left" title={persona.role_name}>{persona.role_name}</td>
+                                <td className="p-2 truncate text-left" title={persona.goal}>{persona.goal}</td>
+                                <td className="p-2 text-left">
+                                    <Button
+                                        variant="icon"
+                                        onClick={(e) => { e.stopPropagation(); onReview(persona); }}
+                                        title="View Persona Details"
+                                        className="view mr-2"
+                                    >
+                                        <EyeIcon />
+                                    </Button>
+                                    <Button
+                                        variant="icon"
+                                        onClick={(e) => { e.stopPropagation(); onEdit(persona); }}
+                                        title="Edit Persona"
+                                        className="edit mr-2"
+                                    >
+                                        <EditIcon />
+                                    </Button>
+                                    <Button
+                                        variant="icon"
+                                        onClick={(e) => { e.stopPropagation(); onDelete(persona); }}
+                                        title="Delete Persona"
+                                        className="delete"
+                                    >
+                                        <DeleteIcon />
+                                    </Button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <p>Select a new persona for the current conversation.</p>
-        <div className="prompt-options">
-            {personas.map(persona => (
-                <div key={persona.prompt_id} className="prompt-option-container">
-                    <Button
-                        variant="secondary"
-                        className={`w-full justify-start ${currentPersonaId === persona.prompt_id ? 'active' : ''}`}
-                        onClick={() => onSet(persona.prompt_id)}
-                    >
-                        {persona.role_name}
-                    </Button>
-                    <Button variant="icon" onClick={() => onReview(persona)} title="View Persona Details">
-                        <EyeIcon/>
-                    </Button>
-                    <Button variant="icon" onClick={() => onDelete(persona)} title="Delete Persona">
-                        <DeleteIcon/>
-                    </Button>
-                </div>
-            ))}
-        </div>
-    </div>
-);
+    );
+}
 
 const ChatPage = () => {
     const {
@@ -93,6 +164,11 @@ const ChatPage = () => {
         setShowPersonaModal(false);
     };
 
+    const handleEditClick = (persona) => {
+        setEditingPersona(persona);
+        setShowPersonaModal(false);
+    };
+
     const confirmDeletePersona = async () => {
         if (personaToDelete) {
             const result = await contextHandleDeletePersona(personaToDelete.prompt_id);
@@ -117,6 +193,8 @@ const ChatPage = () => {
         setShowVersionModal(false);
         setCustomVersionInput('');
     };
+
+
 
     return (
         <>
@@ -157,6 +235,7 @@ const ChatPage = () => {
                         setShowPersonaModal(false);
                         setEditingPersona('new');
                     }}
+                    onEdit={handleEditClick}
                     onDelete={handleDeleteClick}
                     personas={personas}
                 />

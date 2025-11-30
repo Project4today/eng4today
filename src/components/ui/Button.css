@@ -58,10 +58,20 @@
     padding: 5px;
     border-radius: 50%;
     color: var(--text-primary);
+    transition: color 0.2s, background-color 0.2s;
 }
 
 .btn-icon:hover:not(:disabled) {
     background-color: var(--bg-hover);
+}
+
+.btn-icon.delete:hover:not(:disabled) {
+    color: var(--accent-danger);
+}
+
+.btn-icon.edit:hover:not(:disabled),
+.btn-icon.view:hover:not(:disabled) {
+    color: rgba(5, 3, 59, 0.61);
 }
 
 .btn-icon.listening {

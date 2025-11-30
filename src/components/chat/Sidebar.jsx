@@ -44,8 +44,9 @@ const Sidebar = () => {
                 <span className="version-tag">v{version}</span>
             </div>
             <nav className="sidebar-nav">
+                <div className="sidebar-brand-icon">Eng4Today</div>
                 <div className="new-chat-controls">
-                    <Button variant="secondary" onClick={handleNewChat} disabled={isCreatingChat}>
+                    <Button id="new-chat-btn" variant="secondary" onClick={handleNewChat} disabled={isCreatingChat} className="new-chat-btn-customize">
                         <NewChatIcon/>
                         {isCreatingChat ? "Creating..." : "New Chat"}
                     </Button>

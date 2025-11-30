@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTheme } from './contexts/useTheme'; // Corrected import path
+import { useTheme } from './contexts/useTheme';
 import Button from './components/ui/Button';
 
 const SettingsIcon = () => (
@@ -16,6 +16,7 @@ const ThemeMenu = ({ currentTheme, onThemeChange }) => {
             <Button variant="secondary" className={currentTheme === 'fancy' ? 'active' : ''} onClick={() => onThemeChange('fancy')}>Fancy Mode</Button>
             <Button variant="secondary" className={currentTheme === 'dark' ? 'active' : ''} onClick={() => onThemeChange('dark')}>Dark Mode</Button>
             <Button variant="secondary" className={currentTheme === 'light' ? 'active' : ''} onClick={() => onThemeChange('light')}>Light Mode</Button>
+            <Button variant="secondary" className={currentTheme === 'monochrome' ? 'active' : ''} onClick={() => onThemeChange('monochrome')}>Monochrome</Button>
         </div>
     );
 };
@@ -32,7 +33,7 @@ const Header = () => {
   return (
     <header className="app-header">
       <div className="header-left">
-        {/* Future: Logo or App Name */}
+        <div className="header-brand">Eng4Today</div>
       </div>
       <div className="header-right">
         <div className="settings-menu-container">

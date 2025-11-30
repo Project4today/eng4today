@@ -1,0 +1,109 @@
+/* src/monochrome-theme.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,600;1,600&family=Great+Vibes&display=swap');
+
+/* --- Core Theme Variables --- */
+.monochrome-theme {
+  --font-signature: 'Great Vibes', cursive;
+  --bg-body: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #888888;
+  --bg-sidebar: #121212;
+  --text-on-sidebar: #ffffff;
+  --border-primary: #e5e5e5;
+  --shadow-hard: 4px 4px 0px rgba(0,0,0,1);
+  --bg-message-user: #1a1a1a;
+  --text-on-accent: #ffffff;
+  --bg-message-bot: #f4f4f4;
+  --bg-input: #ffffff;
+  --accent-primary: #2a2a2a;
+  --accent-danger: #dc3545; /* Red for delete/danger actions */
+  --bg-modal: #ffffff;
+  --radius-soft: 4px;
+}
+
+/* --- App Frame & Body --- */
+.monochrome-theme body { border: 1px solid var(--border-primary); }
+.monochrome-theme .app-layout {
+    border-radius: var(--radius-soft);
+    border: 1px solid var(--text-secondary);
+    box-shadow: var(--shadow-hard);
+}
+
+/* --- Typography --- */
+.monochrome-theme, .monochrome-theme .btn, .monochrome-theme .chat-input, .monochrome-theme .message { font-family: 'Inter', sans-serif; }
+.monochrome-theme .sidebar-title, .monochrome-theme .chat-header h3, .monochrome-theme .history-item-date, .monochrome-theme .form-header h2, .monochrome-theme .prompt-header h3, .monochrome-theme .cv-section-title, .monochrome-theme .cv-role-name { font-family: 'Playfair Display', serif; font-weight: 600; }
+
+/* --- Header & Sidebar --- */
+.monochrome-theme .app-header::after { content: ''; position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 85%; height: 2px; background-color: var(--text-primary); }
+.monochrome-theme .header-brand { font-family: var(--font-signature); font-size: 2rem; font-weight: normal; color: var(--text-primary); }
+.monochrome-theme .sidebar-header .btn { color: var(--text-on-sidebar); }
+.monochrome-theme .sidebar-brand-icon { font-family: var(--font-signature); font-size: 3rem; font-weight: normal; color: var(--text-on-sidebar); text-align: center; margin-bottom: 15px; padding-bottom: 15px; border-bottom: 1px solid #333; }
+.monochrome-theme .history-item { background-color: transparent; border-color: transparent; color: var(--text-on-sidebar); transition: background-color 0.2s ease; }
+.monochrome-theme .history-item .history-item-title, .monochrome-theme .history-item .history-item-date { color: var(--text-on-sidebar); }
+.monochrome-theme .history-item:hover, .monochrome-theme .history-item.active { background-color: var(--accent-primary); }
+.monochrome-theme .new-chat-btn-customize { width: 100%; }
+
+/* --- Scrollbar --- */
+.monochrome-theme .history-list::-webkit-scrollbar, .monochrome-theme .form-body::-webkit-scrollbar, .monochrome-theme .cv-body::-webkit-scrollbar { width: 8px; }
+.monochrome-theme .history-list::-webkit-scrollbar-track, .monochrome-theme .form-body::-webkit-scrollbar-track, .monochrome-theme .cv-body::-webkit-scrollbar-track { background: transparent; }
+.monochrome-theme .history-list::-webkit-scrollbar-thumb, .monochrome-theme .form-body::-webkit-scrollbar-thumb, .monochrome-theme .cv-body::-webkit-scrollbar-thumb { background-color: #ccc; border-radius: 10px; border: 3px solid var(--bg-modal); }
+.monochrome-theme .history-list::-webkit-scrollbar-thumb:hover, .monochrome-theme .form-body::-webkit-scrollbar-thumb:hover, .monochrome-theme .cv-body::-webkit-scrollbar-thumb:hover { background-color: #aaa; }
+
+/* --- Messages & Input --- */
+.monochrome-theme .message.user { background: var(--bg-message-user); color: var(--text-on-accent); border-radius: 12px 0px 12px 12px; }
+.monochrome-theme .message.bot { background: var(--bg-message-bot); color: var(--text-primary); border-radius: 0px 12px 12px 12px; }
+.monochrome-theme .chat-input { border-radius: var(--radius-soft); border: 1px solid var(--border-primary); padding: 15px; font-size: 1rem; transition: all 0.2s; }
+.monochrome-theme .chat-input:focus { outline: none; border-color: var(--text-primary); box-shadow: var(--shadow-hard); }
+
+/* --- Modal & Form Styles --- */
+.monochrome-theme .modal-content { position: relative; background: var(--bg-modal); border: 1px solid var(--text-primary); color: var(--text-primary); box-shadow: var(--shadow-hard); border-radius: var(--radius-soft); display: flex; flex-direction: column; max-height: 90vh; width: 800px; max-width: 95vw; }
+.monochrome-theme .modal-close-btn { position: absolute; top: 0; right: 0; background: var(--text-primary); border-radius: 0; width: 40px; height: 40px; opacity: 1; z-index: 20; }
+.monochrome-theme .modal-close-btn svg { stroke: var(--bg-modal); }
+.monochrome-theme .modal-close-btn:hover { transform: none; background: #333; }
+
+.monochrome-theme .form-container, .monochrome-theme .persona-cv-content {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1; /* Allow container to fill space */
+    min-height: 0; /* Allow container to shrink */
+}
+.monochrome-theme .form-header, .monochrome-theme .cv-header { padding: 25px; border-bottom: 1px solid var(--border-primary); position: relative; }
+.monochrome-theme .form-header h2 { font-size: 2rem; margin: 0 0 5px 0; }
+.monochrome-theme .form-header p { color: var(--text-secondary); font-family: 'Inter', sans-serif; margin: 0; }
+
+.monochrome-theme .form-body { flex-grow: 1; overflow-y: auto; padding: 25px; }
+.monochrome-theme .form-group { margin-bottom: 30px; }
+.monochrome-theme .form-group-title { font-family: 'Playfair Display', serif; font-size: 1.4rem; margin-bottom: 15px; border-bottom: 1px solid var(--border-primary); padding-bottom: 10px; }
+.monochrome-theme .form-field { margin-bottom: 15px; }
+.monochrome-theme .form-field label { display: block; font-weight: 500; color: var(--text-primary); margin-bottom: 5px; }
+.monochrome-theme .form-field .required-star { color: var(--accent-danger); margin-left: 4px; }
+.monochrome-theme .form-input, .monochrome-theme .form-field textarea, .monochrome-theme .form-field select { width: 100%; padding: 10px; border: 1px solid var(--border-primary); border-radius: var(--radius-soft); font-family: 'Inter', sans-serif; background-color: var(--bg-input); color: var(--text-primary); transition: all 0.2s; }
+.monochrome-theme .form-input:focus, .monochrome-theme .form-field textarea:focus, .monochrome-theme .form-field select:focus { outline: none; border-color: var(--text-primary); box-shadow: var(--shadow-hard); }
+.monochrome-theme .form-actions { display: flex; justify-content: flex-end; gap: 10px; padding: 20px 25px; border-top: 1px solid var(--border-primary); background: var(--bg-modal); }
+.monochrome-theme .form-actions .btn { text-transform: uppercase; letter-spacing: 1px; }
+.monochrome-theme .form-actions .btn-primary, .monochrome-theme .form-actions .btn[type="submit"] { background-color: var(--text-primary); color: var(--bg-body); }
+.monochrome-theme .form-actions .btn-primary:hover, .monochrome-theme .form-actions .btn[type="submit"]:hover { background-color: #000; }
+.monochrome-theme .form-actions .btn-secondary { background-color: transparent; color: var(--text-primary); border: 1px solid var(--border-primary); }
+.monochrome-theme .form-actions .btn-secondary:hover { background-color: var(--bg-message-bot); }
+
+/* --- CV View Specifics --- */
+.monochrome-theme .cv-header { display: flex; align-items: center; gap: 20px; }
+.monochrome-theme .cv-role-name { font-size: 2.2rem; }
+.monochrome-theme .cv-expertise { font-style: italic; font-size: 1.1rem; }
+.monochrome-theme .cv-avatar-img { width: 80px; height: 80px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-primary); }
+.monochrome-theme .initials-avatar-cv { width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; color: var(--text-on-accent); }
+.monochrome-theme .cv-body { flex-grow: 1; overflow-y: auto; padding: 25px; }
+.monochrome-theme .cv-section { margin-bottom: 25px; }
+.monochrome-theme .cv-section-title { display: flex; align-items: center; gap: 10px; font-size: 1.4rem; margin-bottom: 15px; }
+.monochrome-theme .cv-section-content p { margin: 0 0 10px; line-height: 1.6; color: var(--text-secondary); }
+.monochrome-theme .cv-section-content p strong { color: var(--text-primary); }
+.monochrome-theme .cv-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 25px; }
+.monochrome-theme .cv-rules { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+.monochrome-theme .cv-rule-card { padding: 15px; border-radius: var(--radius-soft); border: 1px solid var(--border-primary); }
+.monochrome-theme .cv-rule-card h4 { margin: 0 0 10px; font-family: 'Playfair Display', serif; }
+.monochrome-theme .cv-rule-card.must-do { border-left: 3px solid #28a745; }
+.monochrome-theme .cv-rule-card.must-not-do { border-left: 3px solid var(--accent-danger); }
+.monochrome-theme .cv-actions { position: absolute; top: 15px; right: 50px; display: flex; gap: 5px; }
+.monochrome-theme .cv-actions .btn-icon { color: var(--text-secondary); }
+.monochrome-theme .cv-actions .btn-icon:hover { color: var(--text-primary); }
+.monochrome-theme .cv-actions .btn-icon.delete:hover { color: var(--accent-danger); }

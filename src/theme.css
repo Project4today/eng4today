@@ -33,6 +33,7 @@
 
   /* Accent & Special Colors */
   --accent-primary: #007bff;
+  --accent-danger: #dc3545; /* Red for delete/danger actions */
   --backdrop-filter: blur(25px);
   --shadow-primary: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
 
@@ -68,6 +69,7 @@ body.dark-theme {
 
   /* Accent & Special Colors */
   --accent-primary: #007bff;
+  --accent-danger: #dc3545; /* Red for delete/danger actions */
   --backdrop-filter: none;
   --shadow-primary: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
 
@@ -103,6 +105,7 @@ body.light-theme {
 
   /* Accent & Special Colors */
   --accent-primary: #007bff;
+  --accent-danger: #dc3545; /* Red for delete/danger actions */
   --backdrop-filter: none;
   --shadow-primary: 0 4px 20px 0 rgba(0, 0, 0, 0.08);
 

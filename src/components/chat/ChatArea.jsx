@@ -49,7 +49,7 @@ const Avatar = ({ persona, className }) => {
   );
 };
 
-const BotAvatar = ({ persona }) => <Avatar persona={persona} className="bot-avatar" />;
+const BotAvatar = ({ persona }) => <Avatar persona={persona} className="bot-avatar grayscale-filter" />;
 
 const ThinkingIndicator = ({ persona }) => (
   <div className="message-wrapper bot">
@@ -197,7 +197,12 @@ const ChatArea = () => {
     <main className="chat-area">
       <div className="chat-header">
         <BackButton />
-        <Button variant="icon" onClick={() => setIsSidebarOpen(true)} style={{ visibility: isSidebarOpen ? 'hidden' : 'visible' }}><MenuIcon /></Button>
+        <Button variant="icon" onClick={() => setIsSidebarOpen(true)} style={{ display: isSidebarOpen ? 'none' : 'inline-flex' }}>
+            <MenuIcon />
+        </Button>
+        <Button variant="icon" className="header-persona-switcher grayscale-filter" onClick={() => setShowPersonaModal(true)} title="Switch Persona">
+            <Avatar persona={activePersona} className="chat-avatar-icon" />
+        </Button>
         <h3>{activeTitle}</h3>
       </div>
       <div className="messages">
@@ -229,9 +234,6 @@ const ChatArea = () => {
             rows={1}
             className="chat-input"
           />
-          <Button variant="icon" className="persona-switcher-btn" onClick={() => setShowPersonaModal(true)} title="Switch Persona">
-            <Avatar persona={activePersona} className="chat-avatar-icon" />
-          </Button>
           <Button variant="icon" onClick={() => setShowVersionModal(true)} title={`Current Model: ${botVersion}`}>
             {botVersion.includes('pro') ? <SparkleIcon /> : (botVersion.includes('flash') ? <BoltIcon /> : <CustomIcon />)}
           </Button>

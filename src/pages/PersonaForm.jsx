@@ -20,6 +20,13 @@ const FormField = ({ label, name, value, onChange, type = 'text', required = fal
   </div>
 );
 
+const FormGroup = ({ title, children }) => (
+    <div className="form-group">
+        <h3 className="form-group-title">{title}</h3>
+        {children}
+    </div>
+);
+
 const PersonaForm = ({ persona, onSave, onCancel }) => {
   const initialFormData = {
     role_name: '',
@@ -58,46 +65,56 @@ const PersonaForm = ({ persona, onSave, onCancel }) => {
 
   return (
     <Modal isOpen={true} onClose={onCancel}>
-        <header className="form-header">
-          <h2>{persona ? 'Edit Persona' : 'Create New Persona'}</h2>
-          <p>{persona ? 'Update the details for this AI character.' : 'Define a new AI character from scratch.'}</p>
-        </header>
-        
-        <form onSubmit={handleSubmit} className="form-body">
-          <div className="form-column">
-            <FormField label="Role Name" name="role_name" value={formData.role_name || ''} onChange={handleChange} required placeholder="e.g., Sarcastic Robot" />
-            <FormField label="Avatar URL" name="avatar_url" value={formData.avatar_url || ''} onChange={handleChange} placeholder="https://example.com/image.png" />
+        <div className="form-container">
+            <header className="form-header">
+              <h2>{persona ? 'Edit Persona' : 'Create New Persona'}</h2>
+              <p>{persona ? 'Update the details for this AI character.' : 'Define a new AI character from scratch.'}</p>
+            </header>
             
-            <FormField label="Voice" name="voice_id" value={formData.voice_id || ''} onChange={handleChange} type="select">
-              <option value="">Default</option>
-              {voices && voices.length > 0 ? (
-                voices.map(voice => (
-                  <option key={voice.id} value={voice.id}>
-                    {`${voice.name} (${voice.language_name})`}
-                  </option>
-                ))
-              ) : (
-                <option disabled>Loading voices...</option>
-              )}
-            </FormField>
+            <form onSubmit={handleSubmit} className="form-body">
+                <FormGroup title="Core Identity">
+                    <FormField label="Role Name" name="role_name" value={formData.role_name || ''} onChange={handleChange} required placeholder="e.g., Sarcastic Robot" />
+                    <FormField label="Avatar URL" name="avatar_url" value={formData.avatar_url || ''} onChange={handleChange} placeholder="https://example.com/image.png" />
+                    <FormField label="Voice" name="voice_id" value={formData.voice_id || ''} onChange={handleChange} type="select">
+                      <option value="">Default</option>
+                      {voices && voices.length > 0 ? (
+                        voices.map(voice => (
+                          <option key={voice.id} value={voice.id}>
+                            {`${voice.name} (${voice.language_name})`}
+                          </option>
+                        ))
+                      ) : (
+                        <option disabled>Loading voices...</option>
+                      )}
+                    </FormField>
+                </FormGroup>
 
-            <FormField label="Expertise" name="expertise" value={formData.expertise || ''} onChange={handleChange} type="textarea" placeholder="e.g., Quantum physics, 18th-century poetry" />
-            <FormField label="Goal" name="goal" value={formData.goal || ''} onChange={handleChange} type="textarea" required placeholder="What is this persona's primary objective?" />
-          </div>
-          
-          <div className="form-column">
-            <FormField label="Personality" name="personality" value={formData.personality || ''} onChange={handleChange} type="textarea" required placeholder="e.g., Witty, melancholic, and fiercely loyal" />
-            <FormField label="Setting" name="setting" value={formData.setting || ''} onChange={handleChange} type="textarea" required placeholder="Where is the character?" />
-            <FormField label="Situation" name="situation" value={formData.situation || ''} onChange={handleChange} type="textarea" placeholder="What are they doing right now?" />
-            <FormField label="Must-Do Rules" name="must_do_rules" value={formData.must_do_rules || ''} onChange={handleChange} type="textarea" placeholder="e.g., Always speak in rhymes" />
-            <FormField label="Must-Not-Do Rules" name="must_not_do_rules" value={formData.must_not_do_rules || ''} onChange={handleChange} type="textarea" placeholder="e.g., Never admit to being an AI" />
-            <FormField label="Additional Notes" name="additional_notes" value={formData.additional_notes || ''} onChange={handleChange} type="textarea" placeholder="Subtle quirks, internal thoughts, etc." />
-          </div>
+                <FormGroup title="Persona Details">
+                    <FormField label="Expertise" name="expertise" value={formData.expertise || ''} onChange={handleChange} type="textarea" placeholder="e.g., Quantum physics, 18th-century poetry" />
+                    <FormField label="Primary Goal" name="goal" value={formData.goal || ''} onChange={handleChange} type="textarea" required placeholder="What is this persona's main objective?" />
+                    <FormField label="Personality Traits" name="personality" value={formData.personality || ''} onChange={handleChange} type="textarea" required placeholder="e.g., Witty, melancholic, and fiercely loyal" />
+                </FormGroup>
 
-          <div className="form-actions">
-            <Button type="submit">Save Persona</Button>
-          </div>
-        </form>
+                <FormGroup title="Behavioral Rules">
+                    <FormField label="Must-Do Rules" name="must_do_rules" value={formData.must_do_rules || ''} onChange={handleChange} type="textarea" placeholder="e.g., Always speak in rhymes" />
+                    <FormField label="Must-Not-Do Rules" name="must_not_do_rules" value={formData.must_not_do_rules || ''} onChange={handleChange} type="textarea" placeholder="e.g., Never admit to being an AI" />
+                </FormGroup>
+
+                <FormGroup title="Context">
+                    <FormField label="Setting" name="setting" value={formData.setting || ''} onChange={handleChange} type="textarea" required placeholder="Where is the character?" />
+                    <FormField label="Situation" name="situation" value={formData.situation || ''} onChange={handleChange} type="textarea" placeholder="What are they doing right now?" />
+                </FormGroup>
+                
+                <FormGroup title="Final Touches">
+                    <FormField label="Additional Notes" name="additional_notes" value={formData.additional_notes || ''} onChange={handleChange} type="textarea" placeholder="Subtle quirks, internal thoughts, etc." />
+                </FormGroup>
+
+              <div className="form-actions">
+                <Button type="button" variant="secondary" onClick={onCancel}>Cancel</Button>
+                <Button type="submit">Save Persona</Button>
+              </div>
+            </form>
+        </div>
     </Modal>
   );
 };

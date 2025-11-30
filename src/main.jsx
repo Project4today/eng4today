@@ -5,6 +5,8 @@ import App from './App';
 import { ThemeProvider } from './contexts/ThemeContext.tsx'; // Corrected import path
 import './index.css';
 import './theme.css'; // Centralized theme file
+import './monochrome-theme.css'; // Import the new theme
+import './components/ui/Button.css'; // Import the button styles
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
