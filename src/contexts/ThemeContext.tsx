@@ -3,7 +3,7 @@ import { ThemeContext } from './ThemeContextDefinition';
 
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState<string>(() => {
-    return localStorage.getItem('app-theme') || 'fancy';
+    return localStorage.getItem('app-theme') || 'monochrome';
   });
 
   useEffect(() => {

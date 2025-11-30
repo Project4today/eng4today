@@ -35,6 +35,7 @@ const Header = () => {
       <div className="header-left">
         <div className="header-brand">Eng4Today</div>
       </div>
+      {/*
       <div className="header-right">
         <div className="settings-menu-container">
             <Button variant="icon" onClick={() => setShowMenu(!showMenu)}>
@@ -43,6 +44,7 @@ const Header = () => {
             {showMenu && <ThemeMenu currentTheme={theme} onThemeChange={handleThemeChange} />}
         </div>
       </div>
+      */}
     </header>
   );
 };
