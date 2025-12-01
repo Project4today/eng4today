@@ -42,7 +42,8 @@
 }
 
 .btn-secondary:hover:not(:disabled) {
-    background-color: var(--bg-hover);
+    color: white;
+    background-color: var(--bg-hover)!important;
 }
 
 .btn-secondary.active {
