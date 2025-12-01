@@ -1,0 +1,59 @@
+name: Deploy Frontend
+
+on:
+  push:
+    branches:
+      - main
+  # Allow manual trigger
+  workflow_dispatch:
+
+permissions:
+  id-token: write # Required for OIDC if you switch to it later
+  contents: read
+
+jobs:
+  deploy:
+    name: Build and Deploy to S3 + CloudFront
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+        # This typically creates a 'dist' or 'build' folder.
+        # Ensure this matches your project configuration.
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+          # For OIDC (Preferred for security), verify the AWS_DEPLOYMENT_GUIDE.md
+          # and uncomment the following lines instead of access keys:
+          # role-to-assume: arn:aws:iam::<ACCOUNT_ID>:role/<ROLE_NAME>
+          # role-session-name: GitHubActions
+
+      - name: Sync to S3
+        # Uses AWS CLI to sync the build folder to the bucket
+        # --delete removes files in S3 that are no longer in the build folder
+        run: |
+          aws s3 sync ./dist s3://${{ secrets.AWS_S3_BUCKET }} --delete
+
+      - name: Invalidate CloudFront Cache
+        # Ensures users get the latest version immediately
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.DISTRIBUTION_ID }} \
+            --paths "/*"
