@@ -1,20 +1,37 @@
 const USER_ID = 1;
-const API_BASE_URL = "http://localhost:8000/api";
+
+// We enforce a relative path "/api" to ensure requests go through CloudFront (the same origin).
+// CloudFront then proxies these requests to the HTTP Backend (ALB).
+// This prevents "Mixed Content" errors (HTTPS -> HTTP) and ignores any incorrect ALB URLs in environment variables.
+const API_BASE_URL = "/api";
 
 // Helper function to handle API responses and throw errors for non-OK statuses
 async function handleResponse(response) {
+  const contentType = response.headers.get("content-type");
+  const isJson = contentType && contentType.includes("application/json");
+
   if (!response.ok) {
     let errorDetail = `HTTP error! status: ${response.status}`;
-    try {
-      const errorBody = await response.json();
-      if (errorBody.detail) {
-        errorDetail = errorBody.detail;
+    if (isJson) {
+      try {
+        const errorBody = await response.json();
+        if (errorBody.detail) {
+          errorDetail = errorBody.detail;
+        }
+      } catch {
+        // Parsing failed
       }
-    } catch { // Removed '_' as it was unused
-      // If response is not JSON or parsing fails, use default errorDetail
     }
     throw new Error(errorDetail);
   }
+
+  if (!isJson) {
+    // If we get 200 OK but it's not JSON, it's likely the HTML fallback (CloudFront/SPA issue)
+    const text = await response.text();
+    console.error("Received non-JSON response from API:", text.substring(0, 100)); // Log first 100 chars
+    throw new Error("API returned non-JSON response (likely HTML). Check CloudFront configuration.");
+  }
+
   return response.json();
 }
 
