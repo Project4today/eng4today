@@ -1,5 +1,5 @@
 const USER_ID = 1;
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "/api";
+const API_BASE_URL = "http://superapp-e4td-alb-822218788.us-east-1.elb.amazonaws.com/api";
 
 // Helper function to handle API responses and throw errors for non-OK statuses
 async function handleResponse(response) {
