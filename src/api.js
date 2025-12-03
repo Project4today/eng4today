@@ -1,9 +1,9 @@
 const USER_ID = 1;
-
 // We enforce a relative path "/api" to ensure requests go through CloudFront (the same origin).
 // CloudFront then proxies these requests to the HTTP Backend (ALB).
 // This prevents "Mixed Content" errors (HTTPS -> HTTP) and ignores any incorrect ALB URLs in environment variables.
 const API_BASE_URL = "/api";
+
 
 // Helper function to handle API responses and throw errors for non-OK statuses
 async function handleResponse(response) {
