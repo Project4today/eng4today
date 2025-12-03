@@ -29,6 +29,20 @@ jobs:
       - name: Install Dependencies
         run: npm ci
 
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_BASE_URL: ${{ secrets.API_BASE_URL }}
+        # This typically creates a 'dist' or 'build' folder.
+        # Ensure this matches your project configuration.
+
+      - name: Create .env file explicitly
+        run: |
+            echo "VITE_API_URL=${{ secrets.API_BASE_URL }}" > .env
+            
+            echo "Created .env file with content:"
+            cat .env | sed 's/=.*/=******/'
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
