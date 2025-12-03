@@ -1,5 +1,6 @@
 const USER_ID = 1;
 const API_BASE_URL = "http://superapp-e4td-alb-822218788.us-east-1.elb.amazonaws.com/api";
+import { recursiveFixMojibake } from './utils/encoding';
 
 // Cách gọi chuẩn của Vite
 const apiUrl = import.meta.env.VITE_API_URL;
@@ -33,7 +34,8 @@ async function handleResponse(response) {
     throw new Error("API returned non-JSON response (likely HTML). Check CloudFront configuration.");
   }
 
-  return response.json();
+  const data = await response.json();
+  return recursiveFixMojibake(data);
 }
 
 // --- Voices ---
@@ -88,7 +90,8 @@ export async function getPersonas() {
       console.error(`HTTP error! status: ${response.status} when fetching personas`);
       return [];
     }
-    return await response.json();
+    const data = await response.json();
+    return recursiveFixMojibake(data);
   } catch (error) {
     console.error("Network or unexpected error fetching personas:", error);
     return [];
@@ -188,7 +191,8 @@ export async function getConversations() {
       console.error(`HTTP error! status: ${response.status} when fetching conversations`);
       return [];
     }
-    return await response.json();
+    const data = await response.json();
+    return recursiveFixMojibake(data);
   } catch (error) {
     console.error("Network or unexpected error fetching conversation history:", error);
     return [];
@@ -257,7 +261,8 @@ export async function getChatHistory(sessionId) {
         history: [],
       };
     }
-    return await response.json();
+    const data = await response.json();
+    return recursiveFixMojibake(data);
   } catch (error) {
     console.error(`Network or unexpected error getting chat history for session ${sessionId}:`, error);
     // Return a complete ChatSessionData object with placeholder values
@@ -305,7 +310,8 @@ export async function sendMessage(sessionId, message, persona_id = null) {
       };
     }
     
-    return await response.json();
+    const data = await response.json();
+    return recursiveFixMojibake(data);
 
   } catch (error) {
     console.error(`Network or unexpected error sending message to session ${sessionId}:`, error);
