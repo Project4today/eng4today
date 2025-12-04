@@ -1,5 +1,5 @@
 const USER_ID = 1;
-const API_BASE_URL = "http://superapp-e4td-alb-822218788.us-east-1.elb.amazonaws.com/api";
+const API_BASE_URL = "https://dppbwxoubamrp.cloudfront.net/api";
 import { recursiveFixMojibake } from './utils/encoding';
 
 // Cách gọi chuẩn của Vite
