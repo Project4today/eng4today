@@ -1,11 +1,7 @@
-const USER_ID = 1;
-const API_BASE_URL = "https://dppbwxoubamrp.cloudfront.net/api";
+import { API_BASE_URL } from './config';
 import { recursiveFixMojibake } from './utils/encoding';
 
-// Cách gọi chuẩn của Vite
-const apiUrl = import.meta.env.VITE_API_URL;
-
-console.log("🔥 API URL hien tai la:", apiUrl); // Thêm dòng này để debug
+const USER_ID = 1;
 
 // Helper function to handle API responses and throw errors for non-OK statuses
 async function handleResponse(response) {
